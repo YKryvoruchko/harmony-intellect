@@ -1,60 +1,13 @@
 import Link from "next/link";
+import { submitApplication } from "./actions";
+import { getContent } from "@/lib/cms";
 
-const audiences = [
-  {
-    title: "Батькам",
-    text: "Розклад, вартість, документи, контакти та швидка заявка на навчання.",
-  },
-  {
-    title: "Учням",
-    text: "Зрозумілі напрями, дружнє середовище та навчання українською мовою.",
-  },
-  {
-    title: "Вчителям",
-    text: "Місце для матеріалів, оголошень, розкладу та шкільних оновлень.",
-  },
-];
+export const dynamic = "force-dynamic";
 
-const programs = [
-  "Українська мова та література",
-  "Історія та культура України",
-  "Підготовка до школи",
-  "Творчі заняття та гуртки",
-];
+export default async function Home() {
+  const content = await getContent();
+  const { settings } = content;
 
-const teachers = [
-  {
-    name: "Олена Марченко",
-    role: "Українська мова",
-    initials: "ОМ",
-  },
-  {
-    name: "Ірина Ковалюк",
-    role: "Початкова школа",
-    initials: "ІК",
-  },
-  {
-    name: "Андрій Савчук",
-    role: "Історія та культура",
-    initials: "АС",
-  },
-];
-
-const documents = [
-  "Заява на вступ",
-  "Розклад занять",
-  "Правила школи",
-  "Перелік необхідних документів",
-];
-
-const gallery = [
-  "Урок української мови",
-  "Творча майстерня",
-  "Шкільне свято",
-  "Зустріч з батьками",
-];
-
-export default function Home() {
   return (
     <main className="min-h-screen bg-[#f8fbf4] text-[#14213d]">
       <header className="sticky top-0 z-20 border-b border-[#dce8d1] bg-[#f8fbf4]/92 backdrop-blur">
@@ -65,10 +18,10 @@ export default function Home() {
             </span>
             <span>
               <span className="block text-lg font-black leading-tight">
-                Harmony Intellect
+                {settings.schoolName}
               </span>
               <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-[#2f6fb0]">
-                Українська школа
+                {settings.tagline}
               </span>
             </span>
           </Link>
@@ -91,15 +44,13 @@ export default function Home() {
         <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 lg:grid-cols-[1.02fr_0.98fr] lg:px-8 lg:py-20">
           <div className="flex flex-col justify-center">
             <p className="mb-4 w-fit rounded-lg bg-white px-4 py-2 text-sm font-bold text-[#2f6fb0] shadow-sm ring-1 ring-[#dce8d1]">
-              Українська школа в Румунії
+              {settings.tagline}
             </p>
             <h1 className="max-w-4xl text-5xl font-black leading-[1.04] tracking-normal text-[#14213d] sm:text-6xl lg:text-7xl">
-              Harmony Intellect
+              {settings.schoolName}
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-[#3a4a66]">
-              Простий і теплий простір для дітей, батьків та вчителів:
-              навчання українською, зрозумілий розклад, документи, новини та
-              швидка заявка на вступ.
+              {settings.heroText}
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
@@ -117,15 +68,19 @@ export default function Home() {
             </div>
             <dl className="mt-10 grid max-w-xl grid-cols-3 gap-3">
               <div className="rounded-lg bg-white p-4 shadow-sm ring-1 ring-[#dce8d1]">
-                <dt className="text-2xl font-black text-[#2f6fb0]">4+</dt>
+                <dt className="text-2xl font-black text-[#2f6fb0]">
+                  {content.programs.length}+
+                </dt>
                 <dd className="mt-1 text-sm font-semibold text-[#52627a]">
                   напрями
                 </dd>
               </div>
               <div className="rounded-lg bg-white p-4 shadow-sm ring-1 ring-[#dce8d1]">
-                <dt className="text-2xl font-black text-[#83b744]">3</dt>
+                <dt className="text-2xl font-black text-[#83b744]">
+                  {content.teachers.length}
+                </dt>
                 <dd className="mt-1 text-sm font-semibold text-[#52627a]">
-                  групи
+                  вчителі
                 </dd>
               </div>
               <div className="rounded-lg bg-white p-4 shadow-sm ring-1 ring-[#dce8d1]">
@@ -143,7 +98,7 @@ export default function Home() {
               <p className="text-sm font-black uppercase tracking-[0.16em] text-[#2f6fb0]">
                 Розклад
               </p>
-              <p className="mt-3 text-3xl font-black">Сб 10:00</p>
+              <p className="mt-3 text-3xl font-black">{settings.schedule}</p>
               <p className="mt-1 text-sm font-semibold text-[#52627a]">
                 групові заняття
               </p>
@@ -183,9 +138,9 @@ export default function Home() {
             </h2>
           </div>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {audiences.map((item) => (
+            {content.audiences.map((item) => (
               <article
-                key={item.title}
+                key={item.id}
                 className="rounded-lg border border-[#dce8d1] bg-[#f8fbf4] p-6"
               >
                 <h3 className="text-xl font-black">{item.title}</h3>
@@ -206,21 +161,20 @@ export default function Home() {
               Українська освіта, яку легко пояснити батькам
             </h2>
             <p className="mt-4 leading-8 text-[#52627a]">
-              Структура проста: кожен напрям має короткий опис, документи,
-              розклад та контакт для запису.
+              Кожен напрям можна змінити в адмін-панелі: назву, опис та
+              порядок блоків.
             </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
-            {programs.map((program) => (
+            {content.programs.map((program) => (
               <div
-                key={program}
+                key={program.id}
                 className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-[#dce8d1]"
               >
                 <div className="mb-5 h-2 w-20 rounded bg-[#f7c948]" />
-                <h3 className="text-xl font-black">{program}</h3>
+                <h3 className="text-xl font-black">{program.title}</h3>
                 <p className="mt-3 leading-7 text-[#52627a]">
-                  Групові заняття, зрозумілі матеріали та підтримка української
-                  ідентичності в новому середовищі.
+                  {program.description}
                 </p>
               </div>
             ))}
@@ -247,16 +201,17 @@ export default function Home() {
             </a>
           </div>
           <div className="mt-8 grid gap-3 md:grid-cols-4">
-            {documents.map((document) => (
-              <div
-                key={document}
-                className="rounded-lg border border-white/14 bg-white/8 p-5"
+            {content.documents.map((document) => (
+              <a
+                key={document.id}
+                href={document.url}
+                className="rounded-lg border border-white/14 bg-white/8 p-5 transition hover:bg-white/14"
               >
-                <p className="text-base font-bold">{document}</p>
+                <p className="text-base font-bold">{document.title}</p>
                 <p className="mt-3 text-sm leading-6 text-white/70">
-                  PDF або посилання для завантаження з адмін-панелі.
+                  Відкрити або завантажити документ.
                 </p>
-              </div>
+              </a>
             ))}
           </div>
         </div>
@@ -273,9 +228,9 @@ export default function Home() {
             </h2>
           </div>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {teachers.map((teacher) => (
+            {content.teachers.map((teacher) => (
               <article
-                key={teacher.name}
+                key={teacher.id}
                 className="rounded-lg border border-[#dce8d1] p-5"
               >
                 <div className="grid size-20 place-items-center rounded-lg bg-[#b7d7f2] text-2xl font-black text-[#14213d]">
@@ -286,8 +241,7 @@ export default function Home() {
                   {teacher.role}
                 </p>
                 <p className="mt-4 leading-7 text-[#52627a]">
-                  Короткий опис досвіду, підходу до дітей та предметів, які
-                  викладає педагог.
+                  {teacher.description}
                 </p>
               </article>
             ))}
@@ -307,28 +261,18 @@ export default function Home() {
               </h2>
             </div>
             <p className="max-w-md leading-7 text-[#52627a]">
-              Зараз це акуратні заглушки, які можна замінити на реальні фото з
-              уроків, свят та зустрічей.
+              Поки що це кольорові картки, але їх назви й кольори вже
+              редагуються з адмінки.
             </p>
           </div>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {gallery.map((item, index) => (
+            {content.gallery.map((item) => (
               <figure
-                key={item}
+                key={item.id}
                 className="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-[#dce8d1]"
               >
-                <div
-                  className={[
-                    "h-44",
-                    index % 4 === 0 && "bg-[#9bcf53]",
-                    index % 4 === 1 && "bg-[#f7c948]",
-                    index % 4 === 2 && "bg-[#2f6fb0]",
-                    index % 4 === 3 && "bg-[#b7d7f2]",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                />
-                <figcaption className="p-4 font-bold">{item}</figcaption>
+                <div className="h-44" style={{ backgroundColor: item.color }} />
+                <figcaption className="p-4 font-bold">{item.title}</figcaption>
               </figure>
             ))}
           </div>
@@ -346,20 +290,19 @@ export default function Home() {
             </h2>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
-            <blockquote className="rounded-lg bg-[#f8fbf4] p-6 ring-1 ring-[#dce8d1]">
-              <p className="leading-8 text-[#3a4a66]">
-                “Дитина знову почала впевнено говорити українською і чекати на
-                заняття щотижня.”
-              </p>
-              <footer className="mt-5 font-black">Марія, мама учениці</footer>
-            </blockquote>
-            <blockquote className="rounded-lg bg-[#f8fbf4] p-6 ring-1 ring-[#dce8d1]">
-              <p className="leading-8 text-[#3a4a66]">
-                “Нам важливо, що школа має зрозумілий розклад і швидко
-                відповідає на питання.”
-              </p>
-              <footer className="mt-5 font-black">Олександр, батько</footer>
-            </blockquote>
+            {content.testimonials.map((testimonial) => (
+              <blockquote
+                key={testimonial.id}
+                className="rounded-lg bg-[#f8fbf4] p-6 ring-1 ring-[#dce8d1]"
+              >
+                <p className="leading-8 text-[#3a4a66]">
+                  “{testimonial.quote}”
+                </p>
+                <footer className="mt-5 font-black">
+                  {testimonial.author}
+                </footer>
+              </blockquote>
+            ))}
           </div>
         </div>
       </section>
@@ -374,13 +317,14 @@ export default function Home() {
               Звʼяжіться зі школою
             </h2>
             <div className="mt-6 space-y-3 leading-7 text-[#52627a]">
-              <p>Румунія, місто та адреса школи</p>
-              <p>+40 000 000 000</p>
-              <p>hello@harmony-intellect.ro</p>
+              <p>{settings.address}</p>
+              <p>{settings.phone}</p>
+              <p>{settings.email}</p>
             </div>
           </div>
           <form
             id="application"
+            action={submitApplication}
             className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-[#dce8d1]"
           >
             <h3 className="text-2xl font-black">Заявка на навчання</h3>
@@ -389,26 +333,35 @@ export default function Home() {
                 <span className="text-sm font-bold text-[#52627a]">
                   Імʼя батьків
                 </span>
-                <input className="mt-2 w-full rounded-lg border border-[#cfe0c1] px-4 py-3 outline-none focus:border-[#2f6fb0]" />
+                <input
+                  name="parentName"
+                  required
+                  className="mt-2 w-full rounded-lg border border-[#cfe0c1] px-4 py-3 outline-none focus:border-[#2f6fb0]"
+                />
               </label>
               <label className="block">
                 <span className="text-sm font-bold text-[#52627a]">
                   Телефон
                 </span>
-                <input className="mt-2 w-full rounded-lg border border-[#cfe0c1] px-4 py-3 outline-none focus:border-[#2f6fb0]" />
+                <input
+                  name="phone"
+                  required
+                  className="mt-2 w-full rounded-lg border border-[#cfe0c1] px-4 py-3 outline-none focus:border-[#2f6fb0]"
+                />
               </label>
               <label className="block sm:col-span-2">
                 <span className="text-sm font-bold text-[#52627a]">
                   Повідомлення
                 </span>
                 <textarea
+                  name="message"
                   rows={4}
                   className="mt-2 w-full rounded-lg border border-[#cfe0c1] px-4 py-3 outline-none focus:border-[#2f6fb0]"
                 />
               </label>
             </div>
             <button
-              type="button"
+              type="submit"
               className="mt-5 rounded-lg bg-[#2f6fb0] px-6 py-3 font-black text-white"
             >
               Надіслати
@@ -419,7 +372,7 @@ export default function Home() {
 
       <footer className="border-t border-[#dce8d1] bg-white">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-8 text-sm font-semibold text-[#52627a] md:flex-row md:items-center md:justify-between lg:px-8">
-          <p>© 2026 Harmony Intellect. Українська школа в Румунії.</p>
+          <p>© 2026 {settings.schoolName}. {settings.tagline}.</p>
           <div className="flex gap-4">
             <a href="#programs">Навчання</a>
             <a href="#contacts">Контакти</a>
