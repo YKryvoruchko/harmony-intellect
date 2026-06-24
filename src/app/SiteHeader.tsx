@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { SocialLinks } from "./SocialLinks";
+import { ThemeToggle } from "./ThemeToggle";
 
 const navItems = [
   { href: "#programs", id: "programs", label: "Навчання" },
@@ -91,6 +92,7 @@ export function SiteHeader({
         </div>
 
         <div className="hidden items-center gap-3 md:flex">
+          <ThemeToggle />
           <SocialLinks compact />
           <Link
             href="/admin"
@@ -169,6 +171,7 @@ export function SiteHeader({
         </div>
 
         <div className="mt-4 flex items-center justify-between gap-3">
+          <ThemeToggle compact />
           <SocialLinks compact />
           <Link
             href="/admin"
