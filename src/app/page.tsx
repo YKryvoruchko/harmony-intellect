@@ -1,8 +1,65 @@
+import Image from "next/image";
 import Link from "next/link";
 import { submitApplication } from "./actions";
 import { getContent } from "@/lib/cms";
+import { SiteHeader } from "./SiteHeader";
+import { SocialLinks } from "./SocialLinks";
+import { HeroSchedule } from "./HeroSchedule";
 
 export const dynamic = "force-dynamic";
+
+function isImageFile(url?: string): url is string {
+  return /\.(avif|gif|jpe?g|png|svg|webp)$/i.test(url ?? "");
+}
+
+function fileNameFromUrl(url: string) {
+  return decodeURIComponent(url.split("/").pop() ?? "file");
+}
+
+function FilePreview({
+  url,
+  title,
+  className = "h-44",
+}: {
+  url?: string;
+  title: string;
+  className?: string;
+}) {
+  if (!url) {
+    return null;
+  }
+
+  if (isImageFile(url)) {
+    return (
+      <Image
+        src={url}
+        alt={title}
+        width={640}
+        height={420}
+        className={`${className} w-full object-cover`}
+      />
+    );
+  }
+
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noreferrer"
+      className={`${className} flex w-full flex-col items-center justify-center gap-2 bg-[#b7d7f2] p-4 text-center text-[#14213d]`}
+    >
+      <span className="text-sm font-black uppercase tracking-[0.14em]">
+        Файл
+      </span>
+      <span className="max-w-full break-words text-sm font-bold">
+        {fileNameFromUrl(url)}
+      </span>
+      <span className="rounded-lg bg-white px-3 py-1 text-sm font-black">
+        Відкрити
+      </span>
+    </a>
+  );
+}
 
 export default async function Home() {
   const content = await getContent();
@@ -10,7 +67,8 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-[#f8fbf4] text-[#14213d]">
-      <header className="sticky top-0 z-20 border-b border-[#dce8d1] bg-[#f8fbf4]/92 backdrop-blur">
+      <SiteHeader schoolName={settings.schoolName} tagline={settings.tagline} />
+      <header className="hidden">
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
           <Link href="/" className="flex items-center gap-3">
             <span className="grid size-11 place-items-center rounded-lg bg-[#9bcf53] text-base font-black text-[#14213d] shadow-sm">
@@ -27,6 +85,7 @@ export default async function Home() {
           </Link>
           <div className="hidden items-center gap-6 text-sm font-semibold text-[#31415f] md:flex">
             <a href="#programs">Навчання</a>
+            <a href="#news">Новини</a>
             <a href="#teachers">Вчителі</a>
             <a href="#gallery">Галерея</a>
             <a href="#contacts">Контакти</a>
@@ -40,19 +99,19 @@ export default async function Home() {
         </nav>
       </header>
 
-      <section className="relative overflow-hidden">
+      <section className="motion-section relative overflow-hidden">
         <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 lg:grid-cols-[1.02fr_0.98fr] lg:px-8 lg:py-20">
           <div className="flex flex-col justify-center">
-            <p className="mb-4 w-fit rounded-lg bg-white px-4 py-2 text-sm font-bold text-[#2f6fb0] shadow-sm ring-1 ring-[#dce8d1]">
+            <p className="motion-item mb-4 w-fit rounded-lg bg-white px-4 py-2 text-sm font-bold text-[#2f6fb0] shadow-sm ring-1 ring-[#dce8d1]">
               {settings.tagline}
             </p>
-            <h1 className="max-w-4xl text-5xl font-black leading-[1.04] tracking-normal text-[#14213d] sm:text-6xl lg:text-7xl">
+            <h1 className="motion-item max-w-4xl text-5xl font-black leading-[1.04] tracking-normal text-[#14213d] sm:text-6xl lg:text-7xl">
               {settings.schoolName}
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-[#3a4a66]">
+            <p className="motion-item mt-6 max-w-2xl text-lg leading-8 text-[#3a4a66]">
               {settings.heroText}
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="motion-item mt-8 flex flex-col gap-3 sm:flex-row">
               <a
                 href="#application"
                 className="rounded-lg bg-[#2f6fb0] px-6 py-3 text-center text-base font-bold text-white shadow-sm transition hover:bg-[#255b91]"
@@ -66,8 +125,8 @@ export default async function Home() {
                 Документи
               </a>
             </div>
-            <dl className="mt-10 grid max-w-xl grid-cols-3 gap-3">
-              <div className="rounded-lg bg-white p-4 shadow-sm ring-1 ring-[#dce8d1]">
+            <dl className="motion-item mt-10 grid max-w-xl grid-cols-3 gap-3">
+              <div className="motion-card rounded-lg bg-white p-4 shadow-sm ring-1 ring-[#dce8d1]">
                 <dt className="text-2xl font-black text-[#2f6fb0]">
                   {content.programs.length}+
                 </dt>
@@ -75,7 +134,7 @@ export default async function Home() {
                   напрями
                 </dd>
               </div>
-              <div className="rounded-lg bg-white p-4 shadow-sm ring-1 ring-[#dce8d1]">
+              <div className="motion-card rounded-lg bg-white p-4 shadow-sm ring-1 ring-[#dce8d1]">
                 <dt className="text-2xl font-black text-[#83b744]">
                   {content.teachers.length}
                 </dt>
@@ -83,7 +142,7 @@ export default async function Home() {
                   вчителі
                 </dd>
               </div>
-              <div className="rounded-lg bg-white p-4 shadow-sm ring-1 ring-[#dce8d1]">
+              <div className="motion-card rounded-lg bg-white p-4 shadow-sm ring-1 ring-[#dce8d1]">
                 <dt className="text-2xl font-black text-[#d6a919]">UA</dt>
                 <dd className="mt-1 text-sm font-semibold text-[#52627a]">
                   мова
@@ -92,17 +151,12 @@ export default async function Home() {
             </dl>
           </div>
 
-          <div className="relative min-h-[420px] overflow-hidden rounded-lg bg-[#dfeecf] shadow-xl ring-1 ring-[#cfe0c1]">
+          <div className="motion-visual relative min-h-[420px] overflow-hidden rounded-lg bg-[#dfeecf] shadow-xl ring-1 ring-[#cfe0c1]">
             <div className="absolute inset-0 bg-[linear-gradient(135deg,#eaf6dd_0%,#f9df75_48%,#8fc5ef_100%)]" />
-            <div className="absolute left-8 top-8 rounded-lg bg-white/88 p-5 shadow-lg backdrop-blur">
-              <p className="text-sm font-black uppercase tracking-[0.16em] text-[#2f6fb0]">
-                Розклад
-              </p>
-              <p className="mt-3 text-3xl font-black">{settings.schedule}</p>
-              <p className="mt-1 text-sm font-semibold text-[#52627a]">
-                групові заняття
-              </p>
-            </div>
+            <HeroSchedule
+              schedules={content.schedules}
+              fallbackSchedule={settings.schedule}
+            />
             <div className="absolute bottom-0 left-0 right-0 grid grid-cols-3 gap-3 p-5">
               {["Мова", "Культура", "Творчість"].map((item) => (
                 <div
@@ -127,31 +181,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="bg-white py-16">
-        <div className="mx-auto max-w-7xl px-5 lg:px-8">
-          <div className="max-w-2xl">
-            <p className="text-sm font-black uppercase tracking-[0.18em] text-[#83b744]">
-              Для кого
-            </p>
-            <h2 className="mt-3 text-3xl font-black sm:text-4xl">
-              Сайт одразу відповідає на головні питання
-            </h2>
-          </div>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {content.audiences.map((item) => (
-              <article
-                key={item.id}
-                className="rounded-lg border border-[#dce8d1] bg-[#f8fbf4] p-6"
-              >
-                <h3 className="text-xl font-black">{item.title}</h3>
-                <p className="mt-3 leading-7 text-[#52627a]">{item.text}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="programs" className="py-16">
+      <section id="programs" className="motion-section py-16">
         <div className="mx-auto grid max-w-7xl gap-8 px-5 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
           <div>
             <p className="text-sm font-black uppercase tracking-[0.18em] text-[#2f6fb0]">
@@ -169,20 +199,87 @@ export default async function Home() {
             {content.programs.map((program) => (
               <div
                 key={program.id}
-                className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-[#dce8d1]"
+                className="motion-card overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-[#dce8d1]"
               >
-                <div className="mb-5 h-2 w-20 rounded bg-[#f7c948]" />
-                <h3 className="text-xl font-black">{program.title}</h3>
-                <p className="mt-3 leading-7 text-[#52627a]">
-                  {program.description}
-                </p>
+                {program.imageUrl ? (
+                  <FilePreview url={program.imageUrl} title={program.title} />
+                ) : (
+                  <div className="h-2 w-20 rounded bg-[#f7c948]" />
+                )}
+                <div className="p-6">
+                  <h3 className="text-xl font-black">{program.title}</h3>
+                  <p className="mt-3 leading-7 text-[#52627a]">
+                    {program.description}
+                  </p>
+                  {program.fileUrl ? (
+                    <a
+                      href={program.fileUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-5 inline-flex rounded-lg border border-[#2f6fb0] px-4 py-2 text-sm font-black text-[#2f6fb0]"
+                    >
+                      Відкрити матеріал
+                    </a>
+                  ) : null}
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="documents" className="bg-[#14213d] py-16 text-white">
+      <section id="news" className="motion-section bg-white py-16">
+        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+            <div>
+              <p className="text-sm font-black uppercase tracking-[0.18em] text-[#83b744]">
+                Новини
+              </p>
+              <h2 className="mt-3 text-3xl font-black sm:text-4xl">
+                Останні оновлення школи
+              </h2>
+            </div>
+            <p className="max-w-md leading-7 text-[#52627a]">
+              Оголошення, події, фото та прикріплені матеріали з адмін-панелі.
+            </p>
+          </div>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {content.news.map((newsItem) => (
+              <article
+                key={newsItem.id}
+                className="motion-card overflow-hidden rounded-lg bg-[#f8fbf4] ring-1 ring-[#dce8d1]"
+              >
+                {newsItem.imageUrl ? (
+                  <FilePreview url={newsItem.imageUrl} title={newsItem.title} />
+                ) : (
+                  <div className="h-44 bg-[#b7d7f2]" />
+                )}
+                <div className="p-5">
+                  <time className="text-sm font-black text-[#2f6fb0]">
+                    {newsItem.date}
+                  </time>
+                  <h3 className="mt-3 text-xl font-black">{newsItem.title}</h3>
+                  <p className="mt-3 leading-7 text-[#52627a]">
+                    {newsItem.excerpt}
+                  </p>
+                  {newsItem.fileUrl ? (
+                    <a
+                      href={newsItem.fileUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-5 inline-flex rounded-lg bg-[#f7c948] px-4 py-2 text-sm font-black"
+                    >
+                      Відкрити файл
+                    </a>
+                  ) : null}
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="documents" className="motion-section bg-[#14213d] py-16 text-white">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
@@ -204,7 +301,9 @@ export default async function Home() {
             {content.documents.map((document) => (
               <a
                 key={document.id}
-                href={document.url}
+                href={document.fileUrl || document.url}
+                target="_blank"
+                rel="noreferrer"
                 className="rounded-lg border border-white/14 bg-white/8 p-5 transition hover:bg-white/14"
               >
                 <p className="text-base font-bold">{document.title}</p>
@@ -217,7 +316,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section id="teachers" className="bg-white py-16">
+      <section id="teachers" className="motion-section bg-white py-16">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <div className="max-w-2xl">
             <p className="text-sm font-black uppercase tracking-[0.18em] text-[#83b744]">
@@ -231,11 +330,21 @@ export default async function Home() {
             {content.teachers.map((teacher) => (
               <article
                 key={teacher.id}
-                className="rounded-lg border border-[#dce8d1] p-5"
+                className="motion-card rounded-lg border border-[#dce8d1] p-5"
               >
-                <div className="grid size-20 place-items-center rounded-lg bg-[#b7d7f2] text-2xl font-black text-[#14213d]">
-                  {teacher.initials}
-                </div>
+                {teacher.photoUrl ? (
+                  <div className="w-32 overflow-hidden rounded-lg">
+                    <FilePreview
+                      url={teacher.photoUrl}
+                      title={teacher.name}
+                      className="h-28"
+                    />
+                  </div>
+                ) : (
+                  <div className="grid size-20 place-items-center rounded-lg bg-[#b7d7f2] text-2xl font-black text-[#14213d]">
+                    {teacher.initials}
+                  </div>
+                )}
                 <h3 className="mt-5 text-xl font-black">{teacher.name}</h3>
                 <p className="mt-1 font-semibold text-[#2f6fb0]">
                   {teacher.role}
@@ -249,7 +358,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section id="gallery" className="py-16">
+      <section id="gallery" className="motion-section py-16">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
@@ -269,9 +378,16 @@ export default async function Home() {
             {content.gallery.map((item) => (
               <figure
                 key={item.id}
-                className="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-[#dce8d1]"
+                className="motion-card overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-[#dce8d1]"
               >
-                <div className="h-44" style={{ backgroundColor: item.color }} />
+                {item.imageUrl ? (
+                  <FilePreview url={item.imageUrl} title={item.title} />
+                ) : (
+                  <div
+                    className="h-44"
+                    style={{ backgroundColor: item.color }}
+                  />
+                )}
                 <figcaption className="p-4 font-bold">{item.title}</figcaption>
               </figure>
             ))}
@@ -279,7 +395,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="bg-white py-16">
+      <section className="motion-section bg-white py-16">
         <div className="mx-auto grid max-w-7xl gap-6 px-5 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
           <div>
             <p className="text-sm font-black uppercase tracking-[0.18em] text-[#83b744]">
@@ -293,7 +409,7 @@ export default async function Home() {
             {content.testimonials.map((testimonial) => (
               <blockquote
                 key={testimonial.id}
-                className="rounded-lg bg-[#f8fbf4] p-6 ring-1 ring-[#dce8d1]"
+                className="motion-card rounded-lg bg-[#f8fbf4] p-6 ring-1 ring-[#dce8d1]"
               >
                 <p className="leading-8 text-[#3a4a66]">
                   “{testimonial.quote}”
@@ -307,7 +423,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section id="contacts" className="py-16">
+      <section id="contacts" className="motion-section py-16">
         <div className="mx-auto grid max-w-7xl gap-8 px-5 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
           <div>
             <p className="text-sm font-black uppercase tracking-[0.18em] text-[#2f6fb0]">
@@ -320,6 +436,9 @@ export default async function Home() {
               <p>{settings.address}</p>
               <p>{settings.phone}</p>
               <p>{settings.email}</p>
+            </div>
+            <div className="mt-6">
+              <SocialLinks />
             </div>
           </div>
           <form
@@ -373,10 +492,11 @@ export default async function Home() {
       <footer className="border-t border-[#dce8d1] bg-white">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-8 text-sm font-semibold text-[#52627a] md:flex-row md:items-center md:justify-between lg:px-8">
           <p>© 2026 {settings.schoolName}. {settings.tagline}.</p>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap items-center gap-4">
             <a href="#programs">Навчання</a>
             <a href="#contacts">Контакти</a>
             <Link href="/admin">Адмін-панель</Link>
+            <SocialLinks compact />
           </div>
         </div>
       </footer>

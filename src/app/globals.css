@@ -28,3 +28,78 @@ input,
 textarea {
   font: inherit;
 }
+
+.nav-link::after {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.25rem;
+  left: 0.75rem;
+  height: 2px;
+  content: "";
+  background: #9bcf53;
+  border-radius: 999px;
+  opacity: 0;
+  transform: scaleX(0.25);
+  transform-origin: center;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.nav-link:hover::after,
+.nav-link[aria-current="location"]::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.motion-section,
+.motion-item,
+.motion-visual {
+  animation: rise-in 700ms ease both;
+}
+
+.motion-item:nth-child(2) {
+  animation-delay: 80ms;
+}
+
+.motion-item:nth-child(3) {
+  animation-delay: 160ms;
+}
+
+.motion-item:nth-child(4) {
+  animation-delay: 240ms;
+}
+
+.motion-card {
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease;
+}
+
+.motion-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgb(20 33 61 / 0.1);
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}

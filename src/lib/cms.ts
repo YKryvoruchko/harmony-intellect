@@ -7,30 +7,56 @@ export type Teacher = {
   role: string;
   initials: string;
   description: string;
+  photoUrl?: string;
 };
 
 export type Program = {
   id: string;
   title: string;
   description: string;
+  imageUrl?: string;
+  fileUrl?: string;
 };
 
 export type DocumentItem = {
   id: string;
   title: string;
   url: string;
+  fileUrl?: string;
 };
 
 export type GalleryItem = {
   id: string;
   title: string;
   color: string;
+  imageUrl?: string;
 };
 
 export type Testimonial = {
   id: string;
   quote: string;
   author: string;
+};
+
+export type NewsItem = {
+  id: string;
+  title: string;
+  date: string;
+  excerpt: string;
+  imageUrl?: string;
+  fileUrl?: string;
+};
+
+export type ScheduleClass = {
+  id: string;
+  name: string;
+  monday: string;
+  tuesday: string;
+  wednesday: string;
+  thursday: string;
+  friday: string;
+  saturday: string;
+  sunday: string;
 };
 
 export type Application = {
@@ -57,6 +83,8 @@ export type SiteContent = {
   teachers: Teacher[];
   documents: DocumentItem[];
   gallery: GalleryItem[];
+  news: NewsItem[];
+  schedules: ScheduleClass[];
   testimonials: Testimonial[];
 };
 
@@ -160,6 +188,39 @@ const defaultContent: SiteContent = {
     { id: "holiday", title: "Шкільне свято", color: "#2f6fb0" },
     { id: "meeting", title: "Зустріч з батьками", color: "#b7d7f2" },
   ],
+  news: [
+    {
+      id: "open-day",
+      title: "День відкритих дверей",
+      date: "2026-09-01",
+      excerpt:
+        "Запрошуємо батьків та дітей познайомитися зі школою, вчителями та напрямами навчання.",
+    },
+  ],
+  schedules: [
+    {
+      id: "junior",
+      name: "Молодша група",
+      monday: "Вільний день",
+      tuesday: "17:00 Українська мова",
+      wednesday: "Вільний день",
+      thursday: "17:00 Читання",
+      friday: "Вільний день",
+      saturday: "10:00 Творче заняття",
+      sunday: "Вільний день",
+    },
+    {
+      id: "middle",
+      name: "Середня група",
+      monday: "Вільний день",
+      tuesday: "18:00 Українська мова",
+      wednesday: "Вільний день",
+      thursday: "18:00 Історія та культура",
+      friday: "Вільний день",
+      saturday: "11:30 Практичне заняття",
+      sunday: "Вільний день",
+    },
+  ],
   testimonials: [
     {
       id: "maria",
@@ -198,7 +259,8 @@ async function writeJson<T>(filePath: string, data: T) {
 }
 
 export async function getContent() {
-  return readJson(contentPath, defaultContent);
+  const content = await readJson(contentPath, defaultContent);
+  return normalizeContent(content);
 }
 
 export async function saveContent(content: SiteContent) {
@@ -215,4 +277,43 @@ export async function saveApplications(applications: Application[]) {
 
 export function createId(prefix: string) {
   return `${prefix}-${crypto.randomUUID()}`;
+}
+
+function normalizeContent(content: SiteContent): SiteContent {
+  return {
+    ...defaultContent,
+    ...content,
+    settings: {
+      ...defaultContent.settings,
+      ...(content.settings ?? {}),
+    },
+    audiences: content.audiences ?? defaultContent.audiences,
+    programs: (content.programs ?? defaultContent.programs).map((program) => ({
+      ...program,
+      imageUrl: program.imageUrl ?? "",
+      fileUrl: program.fileUrl ?? "",
+    })),
+    teachers: (content.teachers ?? defaultContent.teachers).map((teacher) => ({
+      ...teacher,
+      photoUrl: teacher.photoUrl ?? "",
+    })),
+    documents: (content.documents ?? defaultContent.documents).map(
+      (document) => ({
+        ...document,
+        fileUrl: document.fileUrl ?? document.url ?? "",
+        url: document.url ?? document.fileUrl ?? "#",
+      }),
+    ),
+    gallery: (content.gallery ?? defaultContent.gallery).map((galleryItem) => ({
+      ...galleryItem,
+      imageUrl: galleryItem.imageUrl ?? "",
+    })),
+    news: (content.news ?? defaultContent.news).map((newsItem) => ({
+      ...newsItem,
+      imageUrl: newsItem.imageUrl ?? "",
+      fileUrl: newsItem.fileUrl ?? "",
+    })),
+    schedules: content.schedules ?? defaultContent.schedules,
+    testimonials: content.testimonials ?? defaultContent.testimonials,
+  };
 }

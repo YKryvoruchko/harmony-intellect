@@ -1,5 +1,8 @@
 "use server";
 
+import { mkdir, writeFile } from "node:fs/promises";
+import path from "node:path";
+import convertHeic from "heic-convert";
 import { revalidatePath } from "next/cache";
 import {
   createId,
@@ -9,7 +12,9 @@ import {
   saveContent,
   type DocumentItem,
   type GalleryItem,
+  type NewsItem,
   type Program,
+  type ScheduleClass,
   type Teacher,
   type Testimonial,
 } from "@/lib/cms";
@@ -26,6 +31,45 @@ function requiredText(formData: FormData, key: string) {
   }
 
   return value;
+}
+
+async function uploadFile(
+  formData: FormData,
+  key: string,
+  folder: string,
+  currentValue = "",
+) {
+  const value = formData.get(key);
+
+  if (!(value instanceof File) || value.size === 0) {
+    return currentValue;
+  }
+
+  const extension = path.extname(value.name) || ".bin";
+  const fileName = `${Date.now()}-${crypto.randomUUID()}${extension}`;
+  const uploadDir = path.join(process.cwd(), "public", "uploads", folder);
+  const bytes = Buffer.from(await value.arrayBuffer());
+
+  await mkdir(uploadDir, { recursive: true });
+  await writeFile(path.join(uploadDir, fileName), bytes);
+
+  if ([".heic", ".heif"].includes(extension.toLowerCase())) {
+    const previewName = fileName.replace(/\.(heic|heif)$/i, ".jpg");
+    const previewBuffer = await convertHeic({
+      buffer: bytes,
+      format: "JPEG",
+      quality: 0.86,
+    });
+
+    await writeFile(
+      path.join(uploadDir, previewName),
+      Buffer.from(previewBuffer),
+    );
+
+    return `/uploads/${folder}/${previewName}`;
+  }
+
+  return `/uploads/${folder}/${fileName}`;
 }
 
 export async function submitApplication(formData: FormData) {
@@ -45,7 +89,7 @@ export async function submitApplication(formData: FormData) {
 
   await saveApplications(applications);
   revalidatePath("/");
-  revalidatePath("/admin");
+  revalidatePath("/admin", "layout");
 }
 
 export async function updateSettings(formData: FormData) {
@@ -63,7 +107,7 @@ export async function updateSettings(formData: FormData) {
 
   await saveContent(content);
   revalidatePath("/");
-  revalidatePath("/admin");
+  revalidatePath("/admin", "layout");
 }
 
 export async function updateAudience(formData: FormData) {
@@ -82,16 +126,19 @@ export async function updateAudience(formData: FormData) {
 
   await saveContent(content);
   revalidatePath("/");
-  revalidatePath("/admin");
+  revalidatePath("/admin", "layout");
 }
 
 export async function upsertProgram(formData: FormData) {
   const content = await getContent();
   const id = text(formData, "id") || createId("program");
+  const current = content.programs.find((program) => program.id === id);
   const item: Program = {
     id,
     title: requiredText(formData, "title"),
     description: requiredText(formData, "description"),
+    imageUrl: await uploadFile(formData, "image", "programs", current?.imageUrl),
+    fileUrl: await uploadFile(formData, "file", "programs", current?.fileUrl),
   };
 
   content.programs = content.programs.some((program) => program.id === id)
@@ -100,7 +147,7 @@ export async function upsertProgram(formData: FormData) {
 
   await saveContent(content);
   revalidatePath("/");
-  revalidatePath("/admin");
+  revalidatePath("/admin", "layout");
 }
 
 export async function deleteProgram(formData: FormData) {
@@ -109,18 +156,20 @@ export async function deleteProgram(formData: FormData) {
   content.programs = content.programs.filter((program) => program.id !== id);
   await saveContent(content);
   revalidatePath("/");
-  revalidatePath("/admin");
+  revalidatePath("/admin", "layout");
 }
 
 export async function upsertTeacher(formData: FormData) {
   const content = await getContent();
   const id = text(formData, "id") || createId("teacher");
+  const current = content.teachers.find((teacher) => teacher.id === id);
   const item: Teacher = {
     id,
     name: requiredText(formData, "name"),
     role: requiredText(formData, "role"),
     initials: requiredText(formData, "initials").slice(0, 3).toUpperCase(),
     description: requiredText(formData, "description"),
+    photoUrl: await uploadFile(formData, "photo", "teachers", current?.photoUrl),
   };
 
   content.teachers = content.teachers.some((teacher) => teacher.id === id)
@@ -129,7 +178,7 @@ export async function upsertTeacher(formData: FormData) {
 
   await saveContent(content);
   revalidatePath("/");
-  revalidatePath("/admin");
+  revalidatePath("/admin", "layout");
 }
 
 export async function deleteTeacher(formData: FormData) {
@@ -138,16 +187,19 @@ export async function deleteTeacher(formData: FormData) {
   content.teachers = content.teachers.filter((teacher) => teacher.id !== id);
   await saveContent(content);
   revalidatePath("/");
-  revalidatePath("/admin");
+  revalidatePath("/admin", "layout");
 }
 
 export async function upsertDocument(formData: FormData) {
   const content = await getContent();
   const id = text(formData, "id") || createId("document");
+  const current = content.documents.find((document) => document.id === id);
+  const fileUrl = await uploadFile(formData, "file", "documents", current?.fileUrl);
   const item: DocumentItem = {
     id,
     title: requiredText(formData, "title"),
-    url: text(formData, "url") || "#",
+    url: text(formData, "url") || fileUrl || "#",
+    fileUrl,
   };
 
   content.documents = content.documents.some((document) => document.id === id)
@@ -158,7 +210,7 @@ export async function upsertDocument(formData: FormData) {
 
   await saveContent(content);
   revalidatePath("/");
-  revalidatePath("/admin");
+  revalidatePath("/admin", "layout");
 }
 
 export async function deleteDocument(formData: FormData) {
@@ -167,16 +219,18 @@ export async function deleteDocument(formData: FormData) {
   content.documents = content.documents.filter((document) => document.id !== id);
   await saveContent(content);
   revalidatePath("/");
-  revalidatePath("/admin");
+  revalidatePath("/admin", "layout");
 }
 
 export async function upsertGalleryItem(formData: FormData) {
   const content = await getContent();
   const id = text(formData, "id") || createId("gallery");
+  const current = content.gallery.find((galleryItem) => galleryItem.id === id);
   const item: GalleryItem = {
     id,
     title: requiredText(formData, "title"),
-    color: text(formData, "color") || "#9bcf53",
+    color: current?.color || "#9bcf53",
+    imageUrl: await uploadFile(formData, "image", "gallery", current?.imageUrl),
   };
 
   content.gallery = content.gallery.some((galleryItem) => galleryItem.id === id)
@@ -187,7 +241,7 @@ export async function upsertGalleryItem(formData: FormData) {
 
   await saveContent(content);
   revalidatePath("/");
-  revalidatePath("/admin");
+  revalidatePath("/admin", "layout");
 }
 
 export async function deleteGalleryItem(formData: FormData) {
@@ -196,7 +250,73 @@ export async function deleteGalleryItem(formData: FormData) {
   content.gallery = content.gallery.filter((galleryItem) => galleryItem.id !== id);
   await saveContent(content);
   revalidatePath("/");
-  revalidatePath("/admin");
+  revalidatePath("/admin", "layout");
+}
+
+export async function upsertNewsItem(formData: FormData) {
+  const content = await getContent();
+  const id = text(formData, "id") || createId("news");
+  const current = content.news.find((newsItem) => newsItem.id === id);
+  const item: NewsItem = {
+    id,
+    title: requiredText(formData, "title"),
+    date: requiredText(formData, "date"),
+    excerpt: requiredText(formData, "excerpt"),
+    imageUrl: await uploadFile(formData, "image", "news", current?.imageUrl),
+    fileUrl: await uploadFile(formData, "file", "news", current?.fileUrl),
+  };
+
+  content.news = content.news.some((newsItem) => newsItem.id === id)
+    ? content.news.map((newsItem) => (newsItem.id === id ? item : newsItem))
+    : [item, ...content.news];
+
+  await saveContent(content);
+  revalidatePath("/");
+  revalidatePath("/admin", "layout");
+}
+
+export async function deleteNewsItem(formData: FormData) {
+  const content = await getContent();
+  const id = requiredText(formData, "id");
+  content.news = content.news.filter((newsItem) => newsItem.id !== id);
+  await saveContent(content);
+  revalidatePath("/");
+  revalidatePath("/admin", "layout");
+}
+
+export async function upsertScheduleClass(formData: FormData) {
+  const content = await getContent();
+  const id = text(formData, "id") || createId("schedule");
+  const item: ScheduleClass = {
+    id,
+    name: requiredText(formData, "name"),
+    monday: requiredText(formData, "monday"),
+    tuesday: requiredText(formData, "tuesday"),
+    wednesday: requiredText(formData, "wednesday"),
+    thursday: requiredText(formData, "thursday"),
+    friday: requiredText(formData, "friday"),
+    saturday: requiredText(formData, "saturday"),
+    sunday: requiredText(formData, "sunday"),
+  };
+
+  content.schedules = content.schedules.some((schedule) => schedule.id === id)
+    ? content.schedules.map((schedule) =>
+        schedule.id === id ? item : schedule,
+      )
+    : [...content.schedules, item];
+
+  await saveContent(content);
+  revalidatePath("/");
+  revalidatePath("/admin", "layout");
+}
+
+export async function deleteScheduleClass(formData: FormData) {
+  const content = await getContent();
+  const id = requiredText(formData, "id");
+  content.schedules = content.schedules.filter((schedule) => schedule.id !== id);
+  await saveContent(content);
+  revalidatePath("/");
+  revalidatePath("/admin", "layout");
 }
 
 export async function upsertTestimonial(formData: FormData) {
@@ -218,7 +338,7 @@ export async function upsertTestimonial(formData: FormData) {
 
   await saveContent(content);
   revalidatePath("/");
-  revalidatePath("/admin");
+  revalidatePath("/admin", "layout");
 }
 
 export async function deleteTestimonial(formData: FormData) {
@@ -229,7 +349,7 @@ export async function deleteTestimonial(formData: FormData) {
   );
   await saveContent(content);
   revalidatePath("/");
-  revalidatePath("/admin");
+  revalidatePath("/admin", "layout");
 }
 
 export async function updateApplicationStatus(formData: FormData) {
@@ -243,7 +363,7 @@ export async function updateApplicationStatus(formData: FormData) {
     ),
   );
 
-  revalidatePath("/admin");
+  revalidatePath("/admin", "layout");
 }
 
 export async function deleteApplication(formData: FormData) {
@@ -252,5 +372,5 @@ export async function deleteApplication(formData: FormData) {
   await saveApplications(
     applications.filter((application) => application.id !== id),
   );
-  revalidatePath("/admin");
+  revalidatePath("/admin", "layout");
 }
