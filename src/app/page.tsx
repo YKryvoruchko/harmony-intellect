@@ -90,12 +90,6 @@ export default async function Home() {
             <a href="#gallery">Галерея</a>
             <a href="#contacts">Контакти</a>
           </div>
-          <Link
-            href="/admin"
-            className="rounded-lg bg-[#f7c948] px-4 py-2 text-sm font-bold text-[#14213d] shadow-sm transition hover:bg-[#ffd866]"
-          >
-            Адмін
-          </Link>
         </nav>
       </header>
 
@@ -495,7 +489,6 @@ export default async function Home() {
           <div className="flex flex-wrap items-center gap-4">
             <a href="#programs">Навчання</a>
             <a href="#contacts">Контакти</a>
-            <Link href="/admin">Адмін-панель</Link>
             <SocialLinks compact />
           </div>
         </div>

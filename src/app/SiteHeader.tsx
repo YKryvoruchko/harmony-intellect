@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { SocialLinks } from "./SocialLinks";
 import { ThemeToggle } from "./ThemeToggle";
 
 const navItems = [
@@ -93,13 +92,6 @@ export function SiteHeader({
 
         <div className="hidden items-center gap-3 md:flex">
           <ThemeToggle />
-          <SocialLinks compact />
-          <Link
-            href="/admin"
-            className="rounded-lg bg-[#f7c948] px-4 py-2 text-sm font-bold text-[#14213d] shadow-sm transition hover:-translate-y-0.5 hover:bg-[#ffd866]"
-          >
-            Адмін
-          </Link>
         </div>
 
         <button
@@ -170,16 +162,8 @@ export function SiteHeader({
           })}
         </div>
 
-        <div className="mt-4 flex items-center justify-between gap-3">
+        <div className="mt-4 flex justify-end">
           <ThemeToggle compact />
-          <SocialLinks compact />
-          <Link
-            href="/admin"
-            onClick={() => setMobileMenuOpen(false)}
-            className="rounded-lg bg-[#f7c948] px-4 py-2 text-sm font-black text-[#14213d]"
-          >
-            Адмін
-          </Link>
         </div>
       </div>
 

@@ -75,6 +75,7 @@ textarea {
 }
 
 .theme-toggle-mark {
+  position: relative;
   width: 0.9rem;
   height: 0.9rem;
   border: 2px solid currentColor;
@@ -83,7 +84,19 @@ textarea {
 }
 
 html[data-theme="dark"] .theme-toggle-mark {
-  box-shadow: 0 0 0 0.22rem rgb(255 216 102 / 0.18);
+  width: 0.72rem;
+  height: 0.72rem;
+  background: currentColor;
+  border: 0;
+  box-shadow:
+    0 -0.58rem 0 -0.32rem currentColor,
+    0 0.58rem 0 -0.32rem currentColor,
+    0.58rem 0 0 -0.32rem currentColor,
+    -0.58rem 0 0 -0.32rem currentColor,
+    0.42rem 0.42rem 0 -0.32rem currentColor,
+    -0.42rem -0.42rem 0 -0.32rem currentColor,
+    0.42rem -0.42rem 0 -0.32rem currentColor,
+    -0.42rem 0.42rem 0 -0.32rem currentColor;
 }
 
 html[data-theme="dark"] body,

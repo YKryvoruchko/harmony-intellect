@@ -20,16 +20,12 @@ export function ThemeToggle({ compact = false }: { compact?: boolean }) {
         applyTheme(nextTheme);
       }}
       className={[
-        "theme-toggle inline-flex shrink-0 items-center justify-center rounded-lg border border-[#dce8d1] bg-white font-black text-[#14213d] shadow-sm transition hover:-translate-y-0.5",
-        compact ? "size-9 text-sm" : "gap-2 px-4 py-2 text-sm",
+        "theme-toggle grid shrink-0 place-items-center rounded-lg border border-[#dce8d1] bg-white font-black text-[#14213d] shadow-sm transition hover:-translate-y-0.5",
+        compact ? "size-9" : "size-10",
       ].join(" ")}
     >
       <span aria-hidden="true" className="theme-toggle-mark" />
-      {compact ? (
-        <span className="sr-only">Тема</span>
-      ) : (
-        <span>Тема</span>
-      )}
+      <span className="sr-only">Тема</span>
     </button>
   );
 }
