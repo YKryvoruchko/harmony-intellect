@@ -74,6 +74,17 @@ textarea {
   min-width: 2.25rem;
 }
 
+.language-switcher:hover .language-menu,
+.language-switcher:focus-within .language-menu {
+  pointer-events: auto;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.language-menu {
+  transform: translateY(-0.25rem);
+}
+
 .theme-toggle-mark {
   position: relative;
   width: 0.9rem;

@@ -1,7 +1,7 @@
 import Image from "next/image";
-import Link from "next/link";
 import { submitApplication } from "./actions";
 import { getContent } from "@/lib/cms";
+import { getLocale, translateContent, ui } from "@/lib/i18n";
 import { SiteHeader } from "./SiteHeader";
 import { SocialLinks } from "./SocialLinks";
 import { HeroSchedule } from "./HeroSchedule";
@@ -19,10 +19,15 @@ function fileNameFromUrl(url: string) {
 function FilePreview({
   url,
   title,
+  labels,
   className = "h-44",
 }: {
   url?: string;
   title: string;
+  labels: {
+    label: string;
+    open: string;
+  };
   className?: string;
 }) {
   if (!url) {
@@ -49,49 +54,36 @@ function FilePreview({
       className={`${className} flex w-full flex-col items-center justify-center gap-2 bg-[#b7d7f2] p-4 text-center text-[#14213d]`}
     >
       <span className="text-sm font-black uppercase tracking-[0.14em]">
-        Файл
+        {labels.label}
       </span>
       <span className="max-w-full break-words text-sm font-bold">
         {fileNameFromUrl(url)}
       </span>
       <span className="rounded-lg bg-white px-3 py-1 text-sm font-black">
-        Відкрити
+        {labels.open}
       </span>
     </a>
   );
 }
 
-export default async function Home() {
-  const content = await getContent();
+export default async function Home({
+  searchParams,
+}: {
+  searchParams?: Promise<{ lang?: string | string[] }>;
+}) {
+  const params = await searchParams;
+  const locale = getLocale(params?.lang);
+  const t = ui[locale];
+  const content = translateContent(await getContent(), locale);
   const { settings } = content;
 
   return (
     <main className="min-h-screen bg-[#f8fbf4] text-[#14213d]">
-      <SiteHeader schoolName={settings.schoolName} tagline={settings.tagline} />
-      <header className="hidden">
-        <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
-          <Link href="/" className="flex items-center gap-3">
-            <span className="grid size-11 place-items-center rounded-lg bg-[#9bcf53] text-base font-black text-[#14213d] shadow-sm">
-              HI
-            </span>
-            <span>
-              <span className="block text-lg font-black leading-tight">
-                {settings.schoolName}
-              </span>
-              <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-[#2f6fb0]">
-                {settings.tagline}
-              </span>
-            </span>
-          </Link>
-          <div className="hidden items-center gap-6 text-sm font-semibold text-[#31415f] md:flex">
-            <a href="#programs">Навчання</a>
-            <a href="#news">Новини</a>
-            <a href="#teachers">Вчителі</a>
-            <a href="#gallery">Галерея</a>
-            <a href="#contacts">Контакти</a>
-          </div>
-        </nav>
-      </header>
+      <SiteHeader
+        schoolName={settings.schoolName}
+        tagline={settings.tagline}
+        locale={locale}
+      />
 
       <section className="motion-section relative overflow-hidden">
         <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 lg:grid-cols-[1.02fr_0.98fr] lg:px-8 lg:py-20">
@@ -110,13 +102,13 @@ export default async function Home() {
                 href="#application"
                 className="rounded-lg bg-[#2f6fb0] px-6 py-3 text-center text-base font-bold text-white shadow-sm transition hover:bg-[#255b91]"
               >
-                Залишити заявку
+                {t.hero.apply}
               </a>
               <a
                 href="#documents"
                 className="rounded-lg border border-[#9bcf53] bg-white px-6 py-3 text-center text-base font-bold text-[#14213d] shadow-sm transition hover:bg-[#eef7e5]"
               >
-                Документи
+                {t.hero.documents}
               </a>
             </div>
             <dl className="motion-item mt-10 grid max-w-xl grid-cols-3 gap-3">
@@ -125,7 +117,7 @@ export default async function Home() {
                   {content.programs.length}+
                 </dt>
                 <dd className="mt-1 text-sm font-semibold text-[#52627a]">
-                  напрями
+                  {t.hero.programs}
                 </dd>
               </div>
               <div className="motion-card rounded-lg bg-white p-4 shadow-sm ring-1 ring-[#dce8d1]">
@@ -133,13 +125,15 @@ export default async function Home() {
                   {content.teachers.length}
                 </dt>
                 <dd className="mt-1 text-sm font-semibold text-[#52627a]">
-                  вчителі
+                  {t.hero.teachers}
                 </dd>
               </div>
               <div className="motion-card rounded-lg bg-white p-4 shadow-sm ring-1 ring-[#dce8d1]">
-                <dt className="text-2xl font-black text-[#d6a919]">UA</dt>
+                <dt className="text-2xl font-black text-[#d6a919]">
+                  {locale.toUpperCase()}
+                </dt>
                 <dd className="mt-1 text-sm font-semibold text-[#52627a]">
-                  мова
+                  {t.hero.language}
                 </dd>
               </div>
             </dl>
@@ -150,9 +144,10 @@ export default async function Home() {
             <HeroSchedule
               schedules={content.schedules}
               fallbackSchedule={settings.schedule}
+              labels={t.schedule}
             />
             <div className="absolute bottom-0 left-0 right-0 grid grid-cols-3 gap-3 p-5">
-              {["Мова", "Культура", "Творчість"].map((item) => (
+              {t.hero.chips.map((item) => (
                 <div
                   key={item}
                   className="rounded-lg bg-white/90 p-4 text-center text-sm font-black shadow-sm backdrop-blur"
@@ -179,14 +174,13 @@ export default async function Home() {
         <div className="mx-auto grid max-w-7xl gap-8 px-5 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
           <div>
             <p className="text-sm font-black uppercase tracking-[0.18em] text-[#2f6fb0]">
-              Напрями навчання
+              {t.programs.eyebrow}
             </p>
             <h2 className="mt-3 text-3xl font-black sm:text-4xl">
-              Українська освіта, яку легко пояснити батькам
+              {t.programs.title}
             </h2>
             <p className="mt-4 leading-8 text-[#52627a]">
-              Кожен напрям можна змінити в адмін-панелі: назву, опис та
-              порядок блоків.
+              {t.programs.text}
             </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -196,7 +190,11 @@ export default async function Home() {
                 className="motion-card overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-[#dce8d1]"
               >
                 {program.imageUrl ? (
-                  <FilePreview url={program.imageUrl} title={program.title} />
+                  <FilePreview
+                    url={program.imageUrl}
+                    title={program.title}
+                    labels={t.file}
+                  />
                 ) : (
                   <div className="h-2 w-20 rounded bg-[#f7c948]" />
                 )}
@@ -212,7 +210,7 @@ export default async function Home() {
                       rel="noreferrer"
                       className="mt-5 inline-flex rounded-lg border border-[#2f6fb0] px-4 py-2 text-sm font-black text-[#2f6fb0]"
                     >
-                      Відкрити матеріал
+                      {t.programs.material}
                     </a>
                   ) : null}
                 </div>
@@ -227,15 +225,13 @@ export default async function Home() {
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.18em] text-[#83b744]">
-                Новини
+                {t.news.eyebrow}
               </p>
               <h2 className="mt-3 text-3xl font-black sm:text-4xl">
-                Останні оновлення школи
+                {t.news.title}
               </h2>
             </div>
-            <p className="max-w-md leading-7 text-[#52627a]">
-              Оголошення, події, фото та прикріплені матеріали з адмін-панелі.
-            </p>
+            <p className="max-w-md leading-7 text-[#52627a]">{t.news.text}</p>
           </div>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             {content.news.map((newsItem) => (
@@ -244,7 +240,11 @@ export default async function Home() {
                 className="motion-card overflow-hidden rounded-lg bg-[#f8fbf4] ring-1 ring-[#dce8d1]"
               >
                 {newsItem.imageUrl ? (
-                  <FilePreview url={newsItem.imageUrl} title={newsItem.title} />
+                  <FilePreview
+                    url={newsItem.imageUrl}
+                    title={newsItem.title}
+                    labels={t.file}
+                  />
                 ) : (
                   <div className="h-44 bg-[#b7d7f2]" />
                 )}
@@ -263,7 +263,7 @@ export default async function Home() {
                       rel="noreferrer"
                       className="mt-5 inline-flex rounded-lg bg-[#f7c948] px-4 py-2 text-sm font-black"
                     >
-                      Відкрити файл
+                      {t.news.file}
                     </a>
                   ) : null}
                 </div>
@@ -273,22 +273,25 @@ export default async function Home() {
         </div>
       </section>
 
-      <section id="documents" className="motion-section bg-[#14213d] py-16 text-white">
+      <section
+        id="documents"
+        className="motion-section bg-[#14213d] py-16 text-white"
+      >
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.18em] text-[#f7c948]">
-                Документи
+                {t.documents.eyebrow}
               </p>
               <h2 className="mt-3 text-3xl font-black sm:text-4xl">
-                Усе потрібне для вступу в одному місці
+                {t.documents.title}
               </h2>
             </div>
             <a
               href="#application"
               className="rounded-lg bg-[#9bcf53] px-5 py-3 text-center font-black text-[#14213d]"
             >
-              Запитати адміністрацію
+              {t.documents.cta}
             </a>
           </div>
           <div className="mt-8 grid gap-3 md:grid-cols-4">
@@ -302,7 +305,7 @@ export default async function Home() {
               >
                 <p className="text-base font-bold">{document.title}</p>
                 <p className="mt-3 text-sm leading-6 text-white/70">
-                  Відкрити або завантажити документ.
+                  {t.documents.text}
                 </p>
               </a>
             ))}
@@ -314,10 +317,10 @@ export default async function Home() {
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <div className="max-w-2xl">
             <p className="text-sm font-black uppercase tracking-[0.18em] text-[#83b744]">
-              Команда
+              {t.teachers.eyebrow}
             </p>
             <h2 className="mt-3 text-3xl font-black sm:text-4xl">
-              Вчителі, яких батьки бачать до першого дзвінка
+              {t.teachers.title}
             </h2>
           </div>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
@@ -331,6 +334,7 @@ export default async function Home() {
                     <FilePreview
                       url={teacher.photoUrl}
                       title={teacher.name}
+                      labels={t.file}
                       className="h-28"
                     />
                   </div>
@@ -357,15 +361,14 @@ export default async function Home() {
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.18em] text-[#2f6fb0]">
-                Галерея
+                {t.gallery.eyebrow}
               </p>
               <h2 className="mt-3 text-3xl font-black sm:text-4xl">
-                Живі моменти школи
+                {t.gallery.title}
               </h2>
             </div>
             <p className="max-w-md leading-7 text-[#52627a]">
-              Поки що це кольорові картки, але їх назви й кольори вже
-              редагуються з адмінки.
+              {t.gallery.text}
             </p>
           </div>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -375,7 +378,11 @@ export default async function Home() {
                 className="motion-card overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-[#dce8d1]"
               >
                 {item.imageUrl ? (
-                  <FilePreview url={item.imageUrl} title={item.title} />
+                  <FilePreview
+                    url={item.imageUrl}
+                    title={item.title}
+                    labels={t.file}
+                  />
                 ) : (
                   <div
                     className="h-44"
@@ -393,10 +400,10 @@ export default async function Home() {
         <div className="mx-auto grid max-w-7xl gap-6 px-5 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
           <div>
             <p className="text-sm font-black uppercase tracking-[0.18em] text-[#83b744]">
-              Відгуки
+              {t.testimonials.eyebrow}
             </p>
             <h2 className="mt-3 text-3xl font-black sm:text-4xl">
-              Довіра через прості людські історії
+              {t.testimonials.title}
             </h2>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
@@ -421,10 +428,10 @@ export default async function Home() {
         <div className="mx-auto grid max-w-7xl gap-8 px-5 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
           <div>
             <p className="text-sm font-black uppercase tracking-[0.18em] text-[#2f6fb0]">
-              Контакти
+              {t.contacts.eyebrow}
             </p>
             <h2 className="mt-3 text-3xl font-black sm:text-4xl">
-              Звʼяжіться зі школою
+              {t.contacts.title}
             </h2>
             <div className="mt-6 space-y-3 leading-7 text-[#52627a]">
               <p>{settings.address}</p>
@@ -440,11 +447,11 @@ export default async function Home() {
             action={submitApplication}
             className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-[#dce8d1]"
           >
-            <h3 className="text-2xl font-black">Заявка на навчання</h3>
+            <h3 className="text-2xl font-black">{t.contacts.formTitle}</h3>
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
               <label className="block">
                 <span className="text-sm font-bold text-[#52627a]">
-                  Імʼя батьків
+                  {t.contacts.parentName}
                 </span>
                 <input
                   name="parentName"
@@ -454,7 +461,7 @@ export default async function Home() {
               </label>
               <label className="block">
                 <span className="text-sm font-bold text-[#52627a]">
-                  Телефон
+                  {t.contacts.phone}
                 </span>
                 <input
                   name="phone"
@@ -464,7 +471,7 @@ export default async function Home() {
               </label>
               <label className="block sm:col-span-2">
                 <span className="text-sm font-bold text-[#52627a]">
-                  Повідомлення
+                  {t.contacts.message}
                 </span>
                 <textarea
                   name="message"
@@ -477,7 +484,7 @@ export default async function Home() {
               type="submit"
               className="mt-5 rounded-lg bg-[#2f6fb0] px-6 py-3 font-black text-white"
             >
-              Надіслати
+              {t.contacts.submit}
             </button>
           </form>
         </div>
@@ -485,10 +492,12 @@ export default async function Home() {
 
       <footer className="border-t border-[#dce8d1] bg-white">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-8 text-sm font-semibold text-[#52627a] md:flex-row md:items-center md:justify-between lg:px-8">
-          <p>© 2026 {settings.schoolName}. {settings.tagline}.</p>
+          <p>
+            {t.footer.copyright} {settings.schoolName}. {settings.tagline}.
+          </p>
           <div className="flex flex-wrap items-center gap-4">
-            <a href="#programs">Навчання</a>
-            <a href="#contacts">Контакти</a>
+            <a href="#programs">{t.nav.programs}</a>
+            <a href="#contacts">{t.nav.contacts}</a>
             <SocialLinks compact />
           </div>
         </div>

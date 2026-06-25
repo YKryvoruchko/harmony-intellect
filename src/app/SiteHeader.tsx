@@ -2,26 +2,36 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import type { Locale } from "@/lib/i18n";
+import { ui } from "@/lib/i18n";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
 
-const navItems = [
-  { href: "#programs", id: "programs", label: "Навчання" },
-  { href: "#news", id: "news", label: "Новини" },
-  { href: "#documents", id: "documents", label: "Документи" },
-  { href: "#teachers", id: "teachers", label: "Вчителі" },
-  { href: "#gallery", id: "gallery", label: "Галерея" },
-  { href: "#contacts", id: "contacts", label: "Контакти" },
-];
+const navKeys = [
+  { href: "#programs", id: "programs", key: "programs" },
+  { href: "#news", id: "news", key: "news" },
+  { href: "#documents", id: "documents", key: "documents" },
+  { href: "#teachers", id: "teachers", key: "teachers" },
+  { href: "#gallery", id: "gallery", key: "gallery" },
+  { href: "#contacts", id: "contacts", key: "contacts" },
+] as const;
 
 export function SiteHeader({
   schoolName,
   tagline,
+  locale,
 }: {
   schoolName: string;
   tagline: string;
+  locale: Locale;
 }) {
-  const [activeSection, setActiveSection] = useState(navItems[0].id);
+  const [activeSection, setActiveSection] = useState<string>(navKeys[0].id);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const copy = ui[locale];
+  const navItems = navKeys.map((item) => ({
+    ...item,
+    label: copy.nav[item.key],
+  }));
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -40,7 +50,7 @@ export function SiteHeader({
       },
     );
 
-    navItems.forEach((item) => {
+    navKeys.forEach((item) => {
       const section = document.getElementById(item.id);
       if (section) {
         observer.observe(section);
@@ -51,7 +61,8 @@ export function SiteHeader({
   }, []);
 
   const activeLabel =
-    navItems.find((item) => item.id === activeSection)?.label ?? "Навчання";
+    navItems.find((item) => item.id === activeSection)?.label ??
+    copy.nav.programs;
 
   return (
     <header className="sticky top-0 z-20 border-b border-[#dce8d1] bg-[#f8fbf4]/92 backdrop-blur">
@@ -90,7 +101,8 @@ export function SiteHeader({
           })}
         </div>
 
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-2 md:flex">
+          <LanguageSwitcher locale={locale} />
           <ThemeToggle />
         </div>
 
@@ -101,7 +113,7 @@ export function SiteHeader({
           onClick={() => setMobileMenuOpen((open) => !open)}
           className="flex shrink-0 items-center gap-2 rounded-lg border border-[#dce8d1] bg-white px-3 py-2 text-sm font-black text-[#14213d] shadow-sm md:hidden"
         >
-          <span>{mobileMenuOpen ? "Закрити" : "Меню"}</span>
+          <span>{mobileMenuOpen ? copy.header.close : copy.header.menu}</span>
           <span className="flex size-5 flex-col justify-center gap-1">
             <span
               className={[
@@ -130,12 +142,13 @@ export function SiteHeader({
         className={[
           "border-t border-[#dce8d1] bg-[#f8fbf4] px-5 transition-[max-height,opacity] duration-200 md:hidden",
           mobileMenuOpen
-            ? "max-h-[560px] pb-5 pt-4 opacity-100"
+            ? "max-h-[620px] pb-5 pt-4 opacity-100"
             : "max-h-0 overflow-hidden opacity-0",
         ].join(" ")}
       >
         <div className="mb-3 rounded-lg bg-white px-4 py-3 text-sm font-bold text-[#52627a] ring-1 ring-[#dce8d1]">
-          Зараз: <span className="text-[#2f6fb0]">{activeLabel}</span>
+          {copy.header.current}:{" "}
+          <span className="text-[#2f6fb0]">{activeLabel}</span>
         </div>
 
         <div className="grid gap-2">
@@ -162,7 +175,8 @@ export function SiteHeader({
           })}
         </div>
 
-        <div className="mt-4 flex justify-end">
+        <div className="mt-4 flex justify-end gap-2">
+          <LanguageSwitcher locale={locale} />
           <ThemeToggle compact />
         </div>
       </div>
