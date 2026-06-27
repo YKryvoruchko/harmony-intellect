@@ -58,8 +58,11 @@ export const ui = {
       title: "Розклад",
       choose: "Оберіть клас",
       freeDay: "Вільний день",
+      pending: "Розклад уточнюється",
+      classLabel: "клас",
       groupLessons: "групові заняття",
-      days: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"],
+      days: ["Пн", "Вт", "Ср", "Чт", "Пт"],
+      dayNames: ["Понеділок", "Вівторок", "Середа", "Четвер", "Пʼятниця"],
     },
     programs: {
       eyebrow: "Напрями навчання",
@@ -82,6 +85,8 @@ export const ui = {
     teachers: {
       eyebrow: "Команда",
       title: "Вчителі, яких батьки бачать до першого дзвінка",
+      more: "Більше",
+      less: "Менше",
     },
     gallery: {
       eyebrow: "Галерея",
@@ -145,8 +150,11 @@ export const ui = {
       title: "Schedule",
       choose: "Choose a class",
       freeDay: "Free day",
+      pending: "Schedule to be confirmed",
+      classLabel: "class",
       groupLessons: "group lessons",
-      days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+      days: ["Mon", "Tue", "Wed", "Thu", "Fri"],
+      dayNames: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
     },
     programs: {
       eyebrow: "Learning Programs",
@@ -169,6 +177,8 @@ export const ui = {
     teachers: {
       eyebrow: "Team",
       title: "Teachers parents can meet before the first lesson",
+      more: "More",
+      less: "Less",
     },
     gallery: {
       eyebrow: "Gallery",
@@ -232,8 +242,11 @@ export const ui = {
       title: "Program",
       choose: "Alege clasa",
       freeDay: "Zi liberă",
+      pending: "Program în curs de confirmare",
+      classLabel: "clasa",
       groupLessons: "lecții de grup",
-      days: ["Lu", "Ma", "Mi", "Jo", "Vi", "Sâ", "Du"],
+      days: ["Lu", "Ma", "Mi", "Jo", "Vi"],
+      dayNames: ["Luni", "Marți", "Miercuri", "Joi", "Vineri"],
     },
     programs: {
       eyebrow: "Direcții de studiu",
@@ -256,6 +269,8 @@ export const ui = {
     teachers: {
       eyebrow: "Echipă",
       title: "Profesori pe care părinții îi pot vedea înainte de primul curs",
+      more: "Mai mult",
+      less: "Mai puțin",
     },
     gallery: {
       eyebrow: "Galerie",

@@ -355,6 +355,70 @@ html[data-theme="dark"] .carousel-button:hover {
   background: #24425f;
 }
 
+.teacher-card-reveal {
+  animation: rise-in 420ms ease both;
+}
+
+.teacher-list-button {
+  display: inline-flex;
+  min-width: 9.5rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border: 1px solid rgb(255 255 255 / 18%);
+  border-radius: 0.5rem;
+  background: #15304d;
+  padding: 0.6rem 1.1rem;
+  color: #ffffff;
+  font-weight: 900;
+  box-shadow: 0 12px 28px rgb(21 48 77 / 22%);
+  transition:
+    background-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.teacher-list-button:hover {
+  transform: translateY(-2px);
+  background: #2f6fb0;
+  box-shadow: 0 16px 34px rgb(47 111 176 / 28%);
+}
+
+.teacher-list-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.teacher-list-button:focus-visible {
+  outline: 3px solid rgb(247 201 72 / 65%);
+  outline-offset: 3px;
+}
+
+.teacher-list-button-icon {
+  display: grid;
+  width: 1.5rem;
+  height: 2.25rem;
+  flex: 0 0 auto;
+  place-items: center;
+  color: #f7c948;
+  font-size: 1.25rem;
+  line-height: 1;
+  transition: color 180ms ease, transform 240ms ease;
+}
+
+.teacher-list-button-icon.is-expanded {
+  transform: rotate(180deg);
+}
+
+html[data-theme="dark"] .teacher-list-button {
+  border-color: #49647f;
+  background: #24425f;
+  box-shadow: 0 12px 28px rgb(0 0 0 / 24%);
+}
+
+html[data-theme="dark"] .teacher-list-button:hover {
+  background: #2f6fb0;
+}
+
 @keyframes rise-in {
   from {
     opacity: 0;

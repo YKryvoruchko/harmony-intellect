@@ -7,6 +7,7 @@ const navItems = [
   { href: "/admin/settings", label: "Головна" },
   { href: "/admin/programs", label: "Напрями навчання" },
   { href: "/admin/news", label: "Новини" },
+  { href: "/admin/schedules", label: "Розклад" },
   { href: "/admin/teachers", label: "Вчителі" },
   { href: "/admin/gallery", label: "Галерея" },
   { href: "/admin/documents", label: "Документи" },

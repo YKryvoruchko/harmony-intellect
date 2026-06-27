@@ -153,26 +153,103 @@
   ],
   "schedules": [
     {
-      "id": "junior",
-      "name": "Молодша група",
-      "monday": "Вільний день",
-      "tuesday": "17:00 Українська мова",
-      "wednesday": "Вільний день",
-      "thursday": "17:00 Читання",
-      "friday": "Вільний день",
-      "saturday": "10:00 Творче заняття",
-      "sunday": "Вільний день"
+      "id": "grade-1",
+      "name": "1 клас",
+      "monday": "Англ.мова\r\nМатематика\r\nЧитання\r\nУкр.мова\r\nФізична культура",
+      "tuesday": "",
+      "wednesday": "",
+      "thursday": "",
+      "friday": ""
     },
     {
-      "id": "middle",
-      "name": "Середня група",
-      "monday": "Вільний день",
-      "tuesday": "18:00 Українська мова",
-      "wednesday": "Вільний день",
-      "thursday": "18:00 Історія та культура",
-      "friday": "Вільний день",
-      "saturday": "11:30 Практичне заняття",
-      "sunday": "Вільний день"
+      "id": "grade-2",
+      "name": "2 клас",
+      "monday": "",
+      "tuesday": "",
+      "wednesday": "",
+      "thursday": "",
+      "friday": ""
+    },
+    {
+      "id": "grade-3",
+      "name": "3 клас",
+      "monday": "",
+      "tuesday": "",
+      "wednesday": "",
+      "thursday": "",
+      "friday": ""
+    },
+    {
+      "id": "grade-4",
+      "name": "4 клас",
+      "monday": "",
+      "tuesday": "",
+      "wednesday": "",
+      "thursday": "",
+      "friday": ""
+    },
+    {
+      "id": "grade-5",
+      "name": "5 клас",
+      "monday": "",
+      "tuesday": "",
+      "wednesday": "",
+      "thursday": "",
+      "friday": ""
+    },
+    {
+      "id": "grade-6",
+      "name": "6 клас",
+      "monday": "",
+      "tuesday": "",
+      "wednesday": "",
+      "thursday": "",
+      "friday": ""
+    },
+    {
+      "id": "grade-7",
+      "name": "7 клас",
+      "monday": "",
+      "tuesday": "",
+      "wednesday": "",
+      "thursday": "",
+      "friday": ""
+    },
+    {
+      "id": "grade-8",
+      "name": "8 клас",
+      "monday": "",
+      "tuesday": "",
+      "wednesday": "",
+      "thursday": "",
+      "friday": ""
+    },
+    {
+      "id": "grade-9",
+      "name": "9 клас",
+      "monday": "",
+      "tuesday": "",
+      "wednesday": "",
+      "thursday": "",
+      "friday": ""
+    },
+    {
+      "id": "grade-10",
+      "name": "10 клас",
+      "monday": "",
+      "tuesday": "",
+      "wednesday": "",
+      "thursday": "",
+      "friday": ""
+    },
+    {
+      "id": "grade-11",
+      "name": "11 клас",
+      "monday": "",
+      "tuesday": "",
+      "wednesday": "",
+      "thursday": "",
+      "friday": ""
     }
   ],
   "testimonials": [

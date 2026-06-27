@@ -290,13 +290,11 @@ export async function upsertScheduleClass(formData: FormData) {
   const item: ScheduleClass = {
     id,
     name: requiredText(formData, "name"),
-    monday: requiredText(formData, "monday"),
-    tuesday: requiredText(formData, "tuesday"),
-    wednesday: requiredText(formData, "wednesday"),
-    thursday: requiredText(formData, "thursday"),
-    friday: requiredText(formData, "friday"),
-    saturday: requiredText(formData, "saturday"),
-    sunday: requiredText(formData, "sunday"),
+    monday: text(formData, "monday"),
+    tuesday: text(formData, "tuesday"),
+    wednesday: text(formData, "wednesday"),
+    thursday: text(formData, "thursday"),
+    friday: text(formData, "friday"),
   };
 
   content.schedules = content.schedules.some((schedule) => schedule.id === id)

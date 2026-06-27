@@ -55,8 +55,8 @@ export type ScheduleClass = {
   wednesday: string;
   thursday: string;
   friday: string;
-  saturday: string;
-  sunday: string;
+  saturday?: string;
+  sunday?: string;
 };
 
 export type Application = {
@@ -91,6 +91,24 @@ export type SiteContent = {
 const dataDir = path.join(process.cwd(), "data");
 const contentPath = path.join(dataDir, "content.json");
 const applicationsPath = path.join(dataDir, "applications.json");
+
+function createGradeSchedules(schedules: ScheduleClass[] = []) {
+  return Array.from({ length: 11 }, (_, index): ScheduleClass => {
+    const grade = index + 1;
+    const id = `grade-${grade}`;
+    const existing = schedules.find((schedule) => schedule.id === id);
+
+    return {
+      id,
+      name: `${grade} клас`,
+      monday: existing?.monday ?? "",
+      tuesday: existing?.tuesday ?? "",
+      wednesday: existing?.wednesday ?? "",
+      thursday: existing?.thursday ?? "",
+      friday: existing?.friday ?? "",
+    };
+  });
+}
 
 const defaultContent: SiteContent = {
   settings: {
@@ -197,30 +215,7 @@ const defaultContent: SiteContent = {
         "Запрошуємо батьків та дітей познайомитися зі школою, вчителями та напрямами навчання.",
     },
   ],
-  schedules: [
-    {
-      id: "junior",
-      name: "Молодша група",
-      monday: "Вільний день",
-      tuesday: "17:00 Українська мова",
-      wednesday: "Вільний день",
-      thursday: "17:00 Читання",
-      friday: "Вільний день",
-      saturday: "10:00 Творче заняття",
-      sunday: "Вільний день",
-    },
-    {
-      id: "middle",
-      name: "Середня група",
-      monday: "Вільний день",
-      tuesday: "18:00 Українська мова",
-      wednesday: "Вільний день",
-      thursday: "18:00 Історія та культура",
-      friday: "Вільний день",
-      saturday: "11:30 Практичне заняття",
-      sunday: "Вільний день",
-    },
-  ],
+  schedules: createGradeSchedules(),
   testimonials: [
     {
       id: "maria",
@@ -313,7 +308,7 @@ function normalizeContent(content: SiteContent): SiteContent {
       imageUrl: newsItem.imageUrl ?? "",
       fileUrl: newsItem.fileUrl ?? "",
     })),
-    schedules: content.schedules ?? defaultContent.schedules,
+    schedules: createGradeSchedules(content.schedules),
     testimonials: content.testimonials ?? defaultContent.testimonials,
   };
 }

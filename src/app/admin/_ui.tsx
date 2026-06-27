@@ -55,11 +55,13 @@ export function TextAreaField({
   name,
   defaultValue,
   rows = 4,
+  required = true,
 }: {
   label: string;
   name: string;
   defaultValue?: string;
   rows?: number;
+  required?: boolean;
 }) {
   return (
     <label className="block">
@@ -68,7 +70,7 @@ export function TextAreaField({
         name={name}
         defaultValue={defaultValue}
         rows={rows}
-        required
+        required={required}
         className={inputClass}
       />
     </label>

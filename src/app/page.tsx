@@ -6,6 +6,7 @@ import { SiteHeader } from "./SiteHeader";
 import { SocialLinks } from "./SocialLinks";
 import { HeroSchedule } from "./HeroSchedule";
 import { ContentCarousel } from "./ContentCarousel";
+import { TeachersList } from "./TeachersList";
 
 export const dynamic = "force-dynamic";
 
@@ -140,11 +141,10 @@ export default async function Home({
             </dl>
           </div>
 
-          <div className="motion-visual relative min-h-[420px] overflow-hidden rounded-lg bg-[#dfeecf] shadow-xl ring-1 ring-[#cfe0c1]">
+          <div className="motion-visual relative min-h-[590px] overflow-hidden rounded-lg bg-[#dfeecf] shadow-xl ring-1 ring-[#cfe0c1] sm:min-h-[560px]">
             <div className="absolute inset-0 bg-[linear-gradient(135deg,#eaf6dd_0%,#f9df75_48%,#8fc5ef_100%)]" />
             <HeroSchedule
               schedules={content.schedules}
-              fallbackSchedule={settings.schedule}
               labels={t.schedule}
             />
             <div className="absolute bottom-0 left-0 right-0 grid grid-cols-3 gap-3 p-5">
@@ -331,11 +331,14 @@ export default async function Home({
               {t.teachers.title}
             </h2>
           </div>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
+          <TeachersList
+            moreLabel={t.teachers.more}
+            lessLabel={t.teachers.less}
+          >
             {content.teachers.map((teacher) => (
               <article
                 key={teacher.id}
-                className="motion-card rounded-lg border border-[#dce8d1] p-5"
+                className="motion-card h-full rounded-lg border border-[#dce8d1] p-5"
               >
                 {teacher.photoUrl ? (
                   <div className="w-32 overflow-hidden rounded-lg">
@@ -360,7 +363,7 @@ export default async function Home({
                 </p>
               </article>
             ))}
-          </div>
+          </TeachersList>
         </div>
       </section>
 
