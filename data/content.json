@@ -79,6 +79,14 @@
       "initials": "АС",
       "description": "Пояснює історію через події, людей, традиції та звʼязок з родиною.",
       "photoUrl": ""
+    },
+    {
+      "id": "teacher-507f6879-2060-4890-abd1-a8f494c024f7",
+      "name": "Криворучко Євген",
+      "role": "Інформатика",
+      "initials": "Є.В",
+      "description": "Вчитель Інформатика",
+      "photoUrl": "/uploads/teachers/1782554566491-5703d783-96d6-42ed-bddf-85f8c818f8a1.jpg"
     }
   ],
   "documents": [

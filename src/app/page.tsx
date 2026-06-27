@@ -5,6 +5,7 @@ import { getLocale, translateContent, ui } from "@/lib/i18n";
 import { SiteHeader } from "./SiteHeader";
 import { SocialLinks } from "./SocialLinks";
 import { HeroSchedule } from "./HeroSchedule";
+import { ContentCarousel } from "./ContentCarousel";
 
 export const dynamic = "force-dynamic";
 
@@ -233,11 +234,18 @@ export default async function Home({
             </div>
             <p className="max-w-md leading-7 text-[#52627a]">{t.news.text}</p>
           </div>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
+          <ContentCarousel
+            variant="news"
+            label={t.news.eyebrow}
+            previousLabel={t.carousel.previous}
+            nextLabel={t.carousel.next}
+            openLabel={t.carousel.open}
+            closeLabel={t.carousel.close}
+          >
             {content.news.map((newsItem) => (
               <article
                 key={newsItem.id}
-                className="motion-card overflow-hidden rounded-lg bg-[#f8fbf4] ring-1 ring-[#dce8d1]"
+                className="motion-card h-full overflow-hidden rounded-lg bg-[#f8fbf4] ring-1 ring-[#dce8d1]"
               >
                 {newsItem.imageUrl ? (
                   <FilePreview
@@ -269,7 +277,7 @@ export default async function Home({
                 </div>
               </article>
             ))}
-          </div>
+          </ContentCarousel>
         </div>
       </section>
 
@@ -371,11 +379,18 @@ export default async function Home({
               {t.gallery.text}
             </p>
           </div>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <ContentCarousel
+            variant="gallery"
+            label={t.gallery.eyebrow}
+            previousLabel={t.carousel.previous}
+            nextLabel={t.carousel.next}
+            openLabel={t.carousel.open}
+            closeLabel={t.carousel.close}
+          >
             {content.gallery.map((item) => (
               <figure
                 key={item.id}
-                className="motion-card overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-[#dce8d1]"
+                className="motion-card h-full overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-[#dce8d1]"
               >
                 {item.imageUrl ? (
                   <FilePreview
@@ -392,7 +407,7 @@ export default async function Home({
                 <figcaption className="p-4 font-bold">{item.title}</figcaption>
               </figure>
             ))}
-          </div>
+          </ContentCarousel>
         </div>
       </section>
 

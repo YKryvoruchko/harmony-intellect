@@ -36,6 +36,12 @@ export const ui = {
       label: "Мова",
       aria: "Змінити мову сайту",
     },
+    carousel: {
+      previous: "Попередній слайд",
+      next: "Наступний слайд",
+      open: "Відкрити картку",
+      close: "Закрити картку",
+    },
     file: {
       label: "Файл",
       open: "Відкрити",
@@ -117,6 +123,12 @@ export const ui = {
       label: "Language",
       aria: "Change site language",
     },
+    carousel: {
+      previous: "Previous slide",
+      next: "Next slide",
+      open: "Open card",
+      close: "Close card",
+    },
     file: {
       label: "File",
       open: "Open",
@@ -197,6 +209,12 @@ export const ui = {
     language: {
       label: "Limbă",
       aria: "Schimbă limba site-ului",
+    },
+    carousel: {
+      previous: "Slide anterior",
+      next: "Slide următor",
+      open: "Deschide cardul",
+      close: "Închide cardul",
     },
     file: {
       label: "Fișier",
