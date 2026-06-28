@@ -24,10 +24,10 @@ export function AdminSidebar() {
         <div className="border-b border-[#dce8d1] px-5 py-5">
           <Link href="/" className="flex items-center gap-3">
             <span className="grid size-10 place-items-center rounded-lg bg-[#9bcf53] font-black">
-              УЛМ
+              ЛМ
             </span>
             <span>
-              <span className="block font-black">Український ліцей Мамайа</span>
+              <span className="block font-black">Ліцей у мамаї</span>
               <span className="text-xs font-bold uppercase tracking-[0.16em] text-[#2f6fb0]">
                 Адмін-панель
               </span>

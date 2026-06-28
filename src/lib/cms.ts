@@ -112,7 +112,7 @@ function createGradeSchedules(schedules: ScheduleClass[] = []) {
 
 const defaultContent: SiteContent = {
   settings: {
-    schoolName: "Український ліцей Мамайа",
+    schoolName: "Ліцей у мамаї",
     tagline: "Українська школа в Румунії",
     heroText:
       "Простий і теплий простір для дітей, батьків та вчителів: навчання українською, зрозумілий розклад, документи, новини та швидка заявка на вступ.",
