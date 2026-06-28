@@ -78,6 +78,8 @@ export default async function Home({
   const t = ui[locale];
   const content = translateContent(await getContent(), locale);
   const { settings } = content;
+  const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings.address)}`;
+  const phoneUrl = `tel:${settings.phone.replace(/[^+\d]/g, "")}`;
 
   return (
     <main className="min-h-screen bg-[#f8fbf4] text-[#14213d]">
@@ -452,8 +454,24 @@ export default async function Home({
               {t.contacts.title}
             </h2>
             <div className="mt-6 space-y-3 leading-7 text-[#52627a]">
-              <p>{settings.address}</p>
-              <p>{settings.phone}</p>
+              <p>
+                <a
+                  href={mapUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-semibold transition hover:text-[#2f6fb0] hover:underline"
+                >
+                  {settings.address}
+                </a>
+              </p>
+              <p>
+                <a
+                  href={phoneUrl}
+                  className="font-semibold transition hover:text-[#2f6fb0] hover:underline"
+                >
+                  {settings.phone}
+                </a>
+              </p>
               <p>{settings.email}</p>
             </div>
             <div className="mt-6">

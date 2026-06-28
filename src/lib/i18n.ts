@@ -303,7 +303,7 @@ const contentTranslations = {
       heroText:
         "A simple and warm space for children, parents, and teachers: Ukrainian-language learning, clear schedules, documents, news, and a quick enrollment request.",
       schedule: "Sat 10:00",
-      address: "Romania, city and school address",
+      address: "Strada D2 32, 900001 Mamaia-Sat",
     },
     programs: {
       "school-prep": {
@@ -420,7 +420,7 @@ const contentTranslations = {
       heroText:
         "Un spațiu simplu și cald pentru copii, părinți și profesori: învățare în ucraineană, program clar, documente, noutăți și cerere rapidă de înscriere.",
       schedule: "Sâ 10:00",
-      address: "România, orașul și adresa școlii",
+      address: "Strada D2 32, 900001 Mamaia-Sat",
     },
     programs: {
       "school-prep": {

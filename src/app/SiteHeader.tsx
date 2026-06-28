@@ -69,7 +69,7 @@ export function SiteHeader({
       <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 lg:px-8">
         <Link href="/" className="flex min-w-0 items-center gap-3">
           <span className="grid size-11 shrink-0 place-items-center rounded-lg bg-[#9bcf53] text-base font-black text-[#14213d] shadow-sm">
-            HI
+            УЛМ
           </span>
           <span className="min-w-0">
             <span className="block truncate text-lg font-black leading-tight">

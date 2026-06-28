@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Harmony Intellect | Українська школа в Румунії",
+  title: "Український ліцей Мамайа | Українська школа в Румунії",
   description:
-    "Сайт української школи Harmony Intellect у Румунії: навчання, документи, вчителі, галерея, контакти та заявки.",
+    "Сайт Українського ліцею Мамайа в Румунії: навчання, документи, вчителі, галерея, контакти та заявки.",
 };
 
 export default function RootLayout({

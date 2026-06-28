@@ -1,12 +1,12 @@
 {
   "settings": {
-    "schoolName": "Harmony Intellect",
+    "schoolName": "Український ліцей Мамайа",
     "tagline": "Українська школа в Румунії",
     "heroText": "Простий і теплий простір для дітей, батьків та вчителів: навчання українською, зрозумілий розклад, документи, новини та швидка заявка на вступ.",
     "schedule": "Сб 10:00",
-    "phone": "+40 000 000 000",
+    "phone": "+380 67 292 57 62",
     "email": "hello@harmony-intellect.ro",
-    "address": "Румунія, місто та адреса школи"
+    "address": "Strada D2 32, 900001 Mamaia-Sat"
   },
   "audiences": [
     {

@@ -1,6 +1,6 @@
-# Harmony Intellect
+# Ukrainian Lyceum Mamaia
 
-A modern website for **Harmony Intellect**, a Ukrainian school in Romania.
+A modern website for **Ukrainian Lyceum Mamaia**, a Ukrainian school in Romania.
 
 The project combines a public school website with a simple admin panel, so the school team can update content without touching code. Parents can learn about the school, check schedules, view documents and photos, and submit an application directly from the site.
 
@@ -170,4 +170,4 @@ These commands help catch TypeScript, Next.js, and ESLint issues before deployme
 
 ## Purpose
 
-Harmony Intellect is built to be clear, friendly, and easy to manage. Its main goal is to help parents quickly understand the school, see important information, submit applications, and follow the life of the Ukrainian community in Romania.
+Ukrainian Lyceum Mamaia is built to be clear, friendly, and easy to manage. Its main goal is to help parents quickly understand the school, see important information, submit applications, and follow the life of the Ukrainian community in Romania.
