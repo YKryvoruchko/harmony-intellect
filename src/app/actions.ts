@@ -3,6 +3,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import convertHeic from "heic-convert";
+import sharp from "sharp";
 import { revalidatePath } from "next/cache";
 import {
   createId,
@@ -38,6 +39,7 @@ async function uploadFile(
   key: string,
   folder: string,
   currentValue = "",
+  optimizeImage = false,
 ) {
   const value = formData.get(key);
 
@@ -45,29 +47,82 @@ async function uploadFile(
     return currentValue;
   }
 
-  const extension = path.extname(value.name) || ".bin";
-  const fileName = `${Date.now()}-${crypto.randomUUID()}${extension}`;
+  const extension = (path.extname(value.name) || ".bin").toLowerCase();
+  const fileStem = `${Date.now()}-${crypto.randomUUID()}`;
   const uploadDir = path.join(process.cwd(), "public", "uploads", folder);
   const bytes = Buffer.from(await value.arrayBuffer());
 
   await mkdir(uploadDir, { recursive: true });
-  await writeFile(path.join(uploadDir, fileName), bytes);
 
-  if ([".heic", ".heif"].includes(extension.toLowerCase())) {
-    const previewName = fileName.replace(/\.(heic|heif)$/i, ".jpg");
+  const optimizableExtensions = new Set([
+    ".avif",
+    ".bmp",
+    ".heic",
+    ".heif",
+    ".jpeg",
+    ".jpg",
+    ".png",
+    ".tif",
+    ".tiff",
+    ".webp",
+  ]);
+
+  if (optimizeImage && optimizableExtensions.has(extension)) {
+    let source = bytes;
+    let fallbackExtension = extension;
+
+    if ([".heic", ".heif"].includes(extension)) {
+      source = Buffer.from(
+        await convertHeic({
+          buffer: bytes,
+          format: "JPEG",
+          quality: 0.95,
+        }),
+      );
+      fallbackExtension = ".jpg";
+    }
+
+    try {
+      const optimizedName = `${fileStem}.webp`;
+      const optimizedBuffer = await sharp(source, { failOn: "none" })
+        .rotate()
+        .resize({
+          width: 2000,
+          height: 2000,
+          fit: "inside",
+          withoutEnlargement: true,
+        })
+        .webp({ quality: 90, smartSubsample: true, effort: 5 })
+        .toBuffer();
+
+      await writeFile(path.join(uploadDir, optimizedName), optimizedBuffer);
+      return `/uploads/${folder}/${optimizedName}`;
+    } catch {
+      const fallbackName = `${fileStem}${fallbackExtension}`;
+
+      await writeFile(path.join(uploadDir, fallbackName), source);
+      return `/uploads/${folder}/${fallbackName}`;
+    }
+  }
+
+  if ([".heic", ".heif"].includes(extension)) {
+    const previewName = `${fileStem}.jpg`;
     const previewBuffer = await convertHeic({
       buffer: bytes,
       format: "JPEG",
-      quality: 0.86,
+      quality: 0.95,
     });
 
     await writeFile(
       path.join(uploadDir, previewName),
       Buffer.from(previewBuffer),
     );
-
     return `/uploads/${folder}/${previewName}`;
   }
+
+  const fileName = `${fileStem}${extension}`;
+
+  await writeFile(path.join(uploadDir, fileName), bytes);
 
   return `/uploads/${folder}/${fileName}`;
 }
@@ -137,7 +192,13 @@ export async function upsertProgram(formData: FormData) {
     id,
     title: requiredText(formData, "title"),
     description: requiredText(formData, "description"),
-    imageUrl: await uploadFile(formData, "image", "programs", current?.imageUrl),
+    imageUrl: await uploadFile(
+      formData,
+      "image",
+      "programs",
+      current?.imageUrl,
+      true,
+    ),
     fileUrl: await uploadFile(formData, "file", "programs", current?.fileUrl),
   };
 
@@ -169,7 +230,13 @@ export async function upsertTeacher(formData: FormData) {
     role: requiredText(formData, "role"),
     initials: requiredText(formData, "initials").slice(0, 3).toUpperCase(),
     description: requiredText(formData, "description"),
-    photoUrl: await uploadFile(formData, "photo", "teachers", current?.photoUrl),
+    photoUrl: await uploadFile(
+      formData,
+      "photo",
+      "teachers",
+      current?.photoUrl,
+      true,
+    ),
   };
 
   content.teachers = content.teachers.some((teacher) => teacher.id === id)
@@ -230,7 +297,13 @@ export async function upsertGalleryItem(formData: FormData) {
     id,
     title: requiredText(formData, "title"),
     color: current?.color || "#9bcf53",
-    imageUrl: await uploadFile(formData, "image", "gallery", current?.imageUrl),
+    imageUrl: await uploadFile(
+      formData,
+      "image",
+      "gallery",
+      current?.imageUrl,
+      true,
+    ),
   };
 
   content.gallery = content.gallery.some((galleryItem) => galleryItem.id === id)
@@ -262,7 +335,13 @@ export async function upsertNewsItem(formData: FormData) {
     title: requiredText(formData, "title"),
     date: requiredText(formData, "date"),
     excerpt: requiredText(formData, "excerpt"),
-    imageUrl: await uploadFile(formData, "image", "news", current?.imageUrl),
+    imageUrl: await uploadFile(
+      formData,
+      "image",
+      "news",
+      current?.imageUrl,
+      true,
+    ),
     fileUrl: await uploadFile(formData, "file", "news", current?.fileUrl),
   };
 
