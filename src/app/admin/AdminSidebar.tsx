@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { logoutAdmin } from "../admin-login/actions";
 
 const navItems = [
   { href: "/admin/settings", label: "Головна" },
@@ -56,13 +57,21 @@ export function AdminSidebar() {
           })}
         </nav>
 
-        <div className="mt-auto hidden border-t border-[#dce8d1] p-4 lg:block">
+        <div className="mt-auto flex gap-2 border-t border-[#dce8d1] p-4">
           <Link
             href="/"
-            className="block rounded-lg border border-[#dce8d1] px-4 py-3 text-center text-sm font-black text-[#14213d]"
+            className="flex-1 rounded-lg border border-[#dce8d1] px-4 py-3 text-center text-sm font-black text-[#14213d]"
           >
             На сайт
           </Link>
+          <form action={logoutAdmin} className="flex-1">
+            <button
+              type="submit"
+              className="h-full w-full rounded-lg border border-[#dce8d1] px-4 py-3 text-sm font-black text-[#52627a] transition hover:border-red-200 hover:text-red-700"
+            >
+              Вийти
+            </button>
+          </form>
         </div>
       </div>
     </aside>

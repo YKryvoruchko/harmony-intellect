@@ -58,6 +58,14 @@ Install dependencies:
 npm install
 ```
 
+Create `.env.local` and set private admin credentials:
+
+```env
+ADMIN_USERNAME=your-admin-name
+ADMIN_PASSWORD=use-a-long-random-password
+ADMIN_SESSION_SECRET=use-a-random-secret-with-at-least-32-characters
+```
+
 Run the development server:
 
 ```bash
@@ -109,7 +117,7 @@ data/content.json
 
 ## Admin Panel
 
-The admin panel is designed as a simple content management area. Each menu item controls a specific section of the public website.
+The admin panel is protected by a signed, HTTP-only session. Each menu item controls a specific section of the public website, and all content-changing server actions verify the administrator session.
 
 The admin can edit:
 

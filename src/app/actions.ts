@@ -5,6 +5,7 @@ import path from "node:path";
 import convertHeic from "heic-convert";
 import sharp from "sharp";
 import { revalidatePath } from "next/cache";
+import { requireAdminSession } from "@/lib/adminAuth";
 import {
   createId,
   getApplications,
@@ -148,6 +149,7 @@ export async function submitApplication(formData: FormData) {
 }
 
 export async function updateSettings(formData: FormData) {
+  await requireAdminSession();
   const content = await getContent();
 
   content.settings = {
@@ -166,6 +168,7 @@ export async function updateSettings(formData: FormData) {
 }
 
 export async function updateAudience(formData: FormData) {
+  await requireAdminSession();
   const content = await getContent();
   const id = requiredText(formData, "id");
 
@@ -185,6 +188,7 @@ export async function updateAudience(formData: FormData) {
 }
 
 export async function upsertProgram(formData: FormData) {
+  await requireAdminSession();
   const content = await getContent();
   const id = text(formData, "id") || createId("program");
   const current = content.programs.find((program) => program.id === id);
@@ -212,6 +216,7 @@ export async function upsertProgram(formData: FormData) {
 }
 
 export async function deleteProgram(formData: FormData) {
+  await requireAdminSession();
   const content = await getContent();
   const id = requiredText(formData, "id");
   content.programs = content.programs.filter((program) => program.id !== id);
@@ -221,6 +226,7 @@ export async function deleteProgram(formData: FormData) {
 }
 
 export async function upsertTeacher(formData: FormData) {
+  await requireAdminSession();
   const content = await getContent();
   const id = text(formData, "id") || createId("teacher");
   const current = content.teachers.find((teacher) => teacher.id === id);
@@ -249,6 +255,7 @@ export async function upsertTeacher(formData: FormData) {
 }
 
 export async function deleteTeacher(formData: FormData) {
+  await requireAdminSession();
   const content = await getContent();
   const id = requiredText(formData, "id");
   content.teachers = content.teachers.filter((teacher) => teacher.id !== id);
@@ -258,6 +265,7 @@ export async function deleteTeacher(formData: FormData) {
 }
 
 export async function upsertDocument(formData: FormData) {
+  await requireAdminSession();
   const content = await getContent();
   const id = text(formData, "id") || createId("document");
   const current = content.documents.find((document) => document.id === id);
@@ -281,6 +289,7 @@ export async function upsertDocument(formData: FormData) {
 }
 
 export async function deleteDocument(formData: FormData) {
+  await requireAdminSession();
   const content = await getContent();
   const id = requiredText(formData, "id");
   content.documents = content.documents.filter((document) => document.id !== id);
@@ -290,6 +299,7 @@ export async function deleteDocument(formData: FormData) {
 }
 
 export async function upsertGalleryItem(formData: FormData) {
+  await requireAdminSession();
   const content = await getContent();
   const id = text(formData, "id") || createId("gallery");
   const current = content.gallery.find((galleryItem) => galleryItem.id === id);
@@ -318,6 +328,7 @@ export async function upsertGalleryItem(formData: FormData) {
 }
 
 export async function deleteGalleryItem(formData: FormData) {
+  await requireAdminSession();
   const content = await getContent();
   const id = requiredText(formData, "id");
   content.gallery = content.gallery.filter((galleryItem) => galleryItem.id !== id);
@@ -327,6 +338,7 @@ export async function deleteGalleryItem(formData: FormData) {
 }
 
 export async function upsertNewsItem(formData: FormData) {
+  await requireAdminSession();
   const content = await getContent();
   const id = text(formData, "id") || createId("news");
   const current = content.news.find((newsItem) => newsItem.id === id);
@@ -355,6 +367,7 @@ export async function upsertNewsItem(formData: FormData) {
 }
 
 export async function deleteNewsItem(formData: FormData) {
+  await requireAdminSession();
   const content = await getContent();
   const id = requiredText(formData, "id");
   content.news = content.news.filter((newsItem) => newsItem.id !== id);
@@ -364,6 +377,7 @@ export async function deleteNewsItem(formData: FormData) {
 }
 
 export async function upsertScheduleClass(formData: FormData) {
+  await requireAdminSession();
   const content = await getContent();
   const id = text(formData, "id") || createId("schedule");
   const item: ScheduleClass = {
@@ -388,6 +402,7 @@ export async function upsertScheduleClass(formData: FormData) {
 }
 
 export async function deleteScheduleClass(formData: FormData) {
+  await requireAdminSession();
   const content = await getContent();
   const id = requiredText(formData, "id");
   content.schedules = content.schedules.filter((schedule) => schedule.id !== id);
@@ -397,6 +412,7 @@ export async function deleteScheduleClass(formData: FormData) {
 }
 
 export async function upsertTestimonial(formData: FormData) {
+  await requireAdminSession();
   const content = await getContent();
   const id = text(formData, "id") || createId("testimonial");
   const item: Testimonial = {
@@ -419,6 +435,7 @@ export async function upsertTestimonial(formData: FormData) {
 }
 
 export async function deleteTestimonial(formData: FormData) {
+  await requireAdminSession();
   const content = await getContent();
   const id = requiredText(formData, "id");
   content.testimonials = content.testimonials.filter(
@@ -430,6 +447,7 @@ export async function deleteTestimonial(formData: FormData) {
 }
 
 export async function updateApplicationStatus(formData: FormData) {
+  await requireAdminSession();
   const id = requiredText(formData, "id");
   const status = requiredText(formData, "status") === "done" ? "done" : "new";
   const applications = await getApplications();
@@ -444,6 +462,7 @@ export async function updateApplicationStatus(formData: FormData) {
 }
 
 export async function deleteApplication(formData: FormData) {
+  await requireAdminSession();
   const id = requiredText(formData, "id");
   const applications = await getApplications();
   await saveApplications(
